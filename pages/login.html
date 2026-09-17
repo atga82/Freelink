@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Iniciar sesión | FreeLink</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link rel="stylesheet" href="../css/styles.css">  <!--estilos generales-->
+
+    <link rel="stylesheet" href="../css/auth.css"> <!--estilos de login-->
+</head>
+
+<body class="login-page">
+
+    <nav class="navbar navbar-expand-lg navbar-freelink"> <!--barra de navegacion-->
+        <div class="container">
+
+            <a class="navbar-brand logo-freelink" href="../index.html"> <!-- logo -->
+                Free<span>Link</span>
+            </a>
+
+            <!--boton movil-->
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarLogin"
+                aria-controls="navbarLogin"
+                aria-expanded="false"
+                aria-label="Mostrar navegación"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarLogin"> <!--navegacion-->
+
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html">
+                            Inicio
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html#explorar">
+                            Explorar
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html#servicios">
+                            Servicios
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html#productos">
+                            Marketplace
+                        </a>
+                    </li>
+
+                    <li class="nav-item ms-lg-2">
+                        <a
+                            href="registro.html"
+                            class="btn btn-freelink"
+                        >
+                            Crear cuenta
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <main class="login-main"> <!--login-->
+
+        <div class="container">
+
+            <div class="row justify-content-center align-items-center g-5">
+
+                <div class="col-lg-5"> <!--presentacion-->
+
+                    <div class="login-intro">
+
+                        <span class="section-label">
+                            LA RED PARA EL TALENTO INDEPENDIENTE
+                        </span>
+
+                        <h1>
+                            El espacio para los Freelance
+                            <span>FreeLink.</span>
+                        </h1>
+
+                        <p>
+                            Accede a tu perfil,
+                            administra tus servicios y conecta con personas
+                            que buscan lo que sabes hacer.
+                        </p>
+
+                        <!-- Mini características -->
+                        <div class="login-features">
+
+                            <div class="login-feature">
+                                <div class="feature-icon purple">
+                                    <i class="bi bi-person-workspace"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Tu perfil profesional</strong>
+                                    <small>
+                                        Muestra tu experiencia y portafolio.
+                                    </small>
+                                </div>
+                            </div>
+
+
+                            <div class="login-feature">
+                                <div class="feature-icon orange">
+                                    <i class="bi bi-shop"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Servicios y productos</strong>
+                                    <small>
+                                        Ofrece tu trabajo desde un solo lugar.
+                                    </small>
+                                </div>
+                            </div>
+
+
+                            <div class="login-feature">
+                                <div class="feature-icon green">
+                                    <i class="bi bi-chat-dots"></i>
+                                </div>
+
+                                <div>
+                                    <strong>Conecta con clientes</strong>
+                                    <small>
+                                        Comunícate directamente con ellos.
+                                    </small>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-8 col-lg-5">   <!--formulario-->
+
+                    <div class="login-card">
+
+                        <div class="login-card-header text-center"> <!--Encabezado-->
+
+                            <div class="login-icon">
+                                <i class="bi bi-person"></i>
+                            </div>
+
+                            <h2>Iniciar sesión</h2>
+
+                            <p>
+                                Entra a tu cuenta de FreeLink
+                            </p>
+
+                        </div>
+
+                        <form id="loginForm" novalidate> <!--formulario-->
+
+                            <div class="mb-4"> <!--Correo-->
+
+                                <label
+                                    for="correo"
+                                    class="form-label"
+                                >
+                                    Correo electrónico
+                                </label>
+
+                                <div class="input-group freelink-input">
+
+                                    <span class="input-group-text">
+                                        <i class="bi bi-envelope"></i>
+                                    </span>
+
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        id="correo"
+                                        name="correo"
+                                        placeholder="tucorreo@ejemplo.com"
+                                        autocomplete="email"
+                                        required
+                                    >
+
+                                </div>
+
+                                <div class="invalid-feedback">
+                                    Ingresa un correo electrónico válido.
+                                </div>
+
+                            </div>
+
+                            <div class="mb-3"> <!--Contraseña-->
+
+                                <div class="d-flex justify-content-between align-items-center">
+
+                                    <label
+                                        for="password"
+                                        class="form-label"
+                                    >
+                                        Contraseña
+                                    </label>
+
+                                    <a
+                                        href="#"
+                                        class="forgot-password"
+                                        id="forgotPassword"
+                                    >
+                                        ¿Olvidaste tu contraseña?
+                                    </a>
+
+                                </div>
+
+                                <div class="input-group freelink-input">
+
+                                    <span class="input-group-text">
+                                        <i class="bi bi-lock"></i>
+                                    </span>
+
+                                    <input
+                                        type="password"
+                                        class="form-control"
+                                        id="password"
+                                        name="password"
+                                        placeholder="Ingresa tu contraseña"
+                                        autocomplete="current-password"
+                                        required
+                                    >
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-password"
+                                        id="togglePassword"
+                                        aria-label="Mostrar contraseña"
+                                    >
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+
+                                </div>
+
+                                <div class="invalid-feedback">
+                                    Ingresa tu contraseña.
+                                </div>
+
+                            </div>
+
+                            <div class="form-check mb-4">  <!--guardar contraseña-->
+
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    id="remember"
+                                    name="remember"
+                                >
+
+                                <label
+                                    class="form-check-label"
+                                    for="remember"
+                                >
+                                    Mantener mi sesión iniciada
+                                </label>
+
+                            </div>
+
+
+                            <!--mensaje PHP/JS-->
+                            <div                   
+                                id="loginMessage"
+                                class="alert d-none"
+                                role="alert"
+                            ></div>
+
+
+                            <!--boton-->
+                            <button
+                                type="submit"
+                                class="btn btn-freelink login-submit w-100"
+                                id="loginBtn"
+                            >
+                                <span id="loginBtnText">
+                                    Iniciar sesión
+                                </span>
+
+                                <span
+                                    id="loginSpinner"
+                                    class="spinner-border spinner-border-sm d-none"
+                                    role="status"
+                                    aria-hidden="true"
+                                ></span>
+                            </button>
+
+                        </form>
+
+                        <div class="login-register text-center"> <!--registro-->
+
+                            <span>
+                                ¿Todavía no tienes una cuenta?
+                            </span>
+
+                            <a href="registro.html">
+                                Crear cuenta
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="freelink-footer"> <!--pie de pagina-->
+
+        <div class="container">
+
+            <div class="row align-items-center gy-3">
+
+                <div class="col-md-6">
+
+                    <a
+                        href="../index.html"
+                        class="footer-logo"
+                    >
+                        Free<span>Link</span>
+                    </a>
+
+                    <p>
+                        Mostrar. Conectar. Vender. Crecer.
+                    </p>
+
+                </div>
+
+                <div class="col-md-6 text-md-end">
+
+                    <small>
+                        2026 FreeLink. Todos los derechos reservados.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!--bootstrap JS-->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+    <script src="../js/auth.js"></script> <!--javascript propio-->
+
+</body>
+
+</html>
+

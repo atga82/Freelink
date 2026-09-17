@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Crear cuenta | FreeLink</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <link rel="stylesheet" href="../css/auth.css">   <!--estilos de autenticacion-->
+</head>
+
+<body class="login-page">
+
+    <nav class="navbar navbar-expand-lg navbar-freelink"> <!--barra de navegacion-->
+
+        <div class="container">
+
+            <!--logo-->
+            <a
+                class="navbar-brand logo-freelink"
+                href="../index.html"
+            >
+                Free<span>Link</span>
+            </a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarRegistro"
+                aria-controls="navbarRegistro"
+                aria-expanded="false"
+                aria-label="Mostrar navegación"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!--navegacion-->
+            <div
+                class="collapse navbar-collapse"
+                id="navbarRegistro"
+            >
+
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="../index.html"
+                        >
+                            Inicio
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="../index.html#explorar"
+                        >
+                            Explorar
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="../index.html#servicios"
+                        >
+                            Servicios
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="../index.html#productos"
+                        >
+                            Marketplace
+                        </a>
+                    </li>
+
+                    <li class="nav-item ms-lg-2">
+                        <a
+                            href="login.html"
+                            class="btn btn-freelink-outline"
+                        >
+                            Iniciar sesión
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <!--registro-->
+    <main class="login-main">
+
+        <div class="container">
+
+            <div class="row justify-content-center">
+
+                <div class="col-xl-8 col-lg-9 col-md-11">
+
+                    <div class="login-card register-card">
+
+                        <div class="login-card-header text-center"> <!--encabezado-->
+
+                            <div class="login-icon">
+                                <i class="bi bi-person-plus"></i>
+                            </div>
+
+                            <span class="section-label">
+                                ÚNETE A FREELINK
+                            </span>
+
+                            <h1>
+                                Crea tu cuenta
+                            </h1>
+
+                            <p>
+                                Forma parte de una comunidad donde tu
+                                talento puede encontrar nuevas oportunidades.
+                            </p>
+
+                        </div>
+
+                        <div class="register-progress"> <!--pasos del registro-->
+
+                            <div
+                                class="register-step active"
+                                id="stepIndicator1"
+                            >
+                                <span>1</span>
+                                <small>Cuenta</small>
+                            </div>
+
+                            <div class="progress-line"></div>
+
+                            <div
+                                class="register-step"
+                                id="stepIndicator2"
+                            >
+                                <span>2</span>
+                                <small>Intereses</small>
+                            </div>
+
+                            <div class="progress-line"></div>
+
+                            <div
+                                class="register-step"
+                                id="stepIndicator3"
+                            >
+                                <span>3</span>
+                                <small>Listo</small>
+                            </div>
+
+                        </div>
+
+                        <!--formulario-->
+                        <form
+                            id="registerForm"
+                            novalidate
+                        >
+
+                            <section
+                                id="registerStep1"
+                                class="register-form-step active"
+                            >
+
+                                <div class="step-heading">
+
+                                    <span class="step-number">
+                                        01
+                                    </span>
+
+                                    <div>
+                                        <h2>
+                                            Tu información
+                                        </h2>
+
+                                    </div>
+
+                                </div>
+
+                                <!--nombre-->
+                                <div class="mb-4">
+
+                                    <label
+                                        for="nombre"
+                                        class="form-label"
+                                    >
+                                        Nombre completo
+                                    </label>
+
+                                    <div class="input-group freelink-input">
+
+                                        <span class="input-group-text">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="nombre"
+                                            name="nombre"
+                                            placeholder="Ej. Angel García"
+                                            autocomplete="name"
+                                            required
+                                        >
+
+                                    </div>
+
+                                    <div class="invalid-feedback">
+                                        Escribe tu nombre completo.
+                                    </div>
+
+                                </div>
+
+                                <div class="mb-4"> <!--correo-->
+
+                                    <label
+                                        for="correo"
+                                        class="form-label"
+                                    >
+                                        Correo electrónico
+                                    </label>
+
+                                    <div class="input-group freelink-input">
+
+                                        <span class="input-group-text">
+                                            <i class="bi bi-envelope"></i>
+                                        </span>
+
+                                        <input
+                                            type="email"
+                                            class="form-control"
+                                            id="correo"
+                                            name="correo"
+                                            placeholder="tucorreo@ejemplo.com"
+                                            autocomplete="email"
+                                            required
+                                        >
+
+                                    </div>
+
+                                    <div class="invalid-feedback">
+                                        Ingresa un correo electrónico válido.
+                                    </div>
+
+                                </div>
+
+                                <div class="mb-4"> <!--contraseña-->
+
+                                    <label
+                                        for="passwordRegistro"
+                                        class="form-label"
+                                    >
+                                        Contraseña
+                                    </label>
+
+                                    <div class="input-group freelink-input">
+
+                                        <span class="input-group-text">
+                                            <i class="bi bi-lock"></i>
+                                        </span>
+
+                                        <input
+                                            type="password"
+                                            class="form-control"
+                                            id="passwordRegistro"
+                                            name="password"
+                                            placeholder="Mínimo 6 caracteres"
+                                            minlength="6"
+                                            autocomplete="new-password"
+                                            required
+                                        >
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-password"
+                                            id="toggleRegisterPassword"
+                                            aria-label="Mostrar contraseña"
+                                        >
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+
+                                    </div>
+
+                                    <div class="invalid-feedback">
+                                        La contraseña debe tener al menos
+                                        6 caracteres.
+                                    </div>
+
+                                </div>
+
+                                <div class="mb-4">
+
+                                    <label
+                                        for="confirmPassword"
+                                        class="form-label"
+                                    >
+                                        Confirmar contraseña
+                                    </label>
+
+                                    <div class="input-group freelink-input">
+
+                                        <span class="input-group-text">
+                                            <i class="bi bi-shield-check"></i>
+                                        </span>
+
+                                        <input
+                                            type="password"
+                                            class="form-control"
+                                            id="confirmPassword"
+                                            name="confirmPassword"
+                                            placeholder="Repite tu contraseña"
+                                            autocomplete="new-password"
+                                            required
+                                        >
+
+                                    </div>
+
+                                    <div
+                                        id="passwordFeedback"
+                                        class="invalid-feedback"
+                                    >
+                                        Las contraseñas deben coincidir.
+                                    </div>
+
+                                </div>
+
+                                <!--boton siguiente-->
+                                <div class="text-end">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-freelink"
+                                        id="nextStep1"
+                                    >
+                                        Continuar
+                                        <i class="bi bi-arrow-right ms-2"></i>
+                                    </button>
+
+                                </div>
+
+                            </section>
+
+                            <!--cuestionario-->
+                            <section
+                                id="registerStep2"
+                                class="register-form-step"
+                            >
+
+                                <div class="step-heading">
+
+                                    <span class="step-number">
+                                        02
+                                    </span>
+
+                                    <div>
+                                        <h2>
+                                            ¿Qué te interesa descubrir?
+                                        </h2>
+
+                                        <p>
+                                            Selecciona tus áreas de interés.
+                                            Usaremos tus respuestas para
+                                            personalizar tus recomendaciones.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <!--areas de interes-->
+                                <div class="question-block">
+
+                                    <label class="question-title">
+                                        ¿Qué tipo de contenido te gustaría
+                                        encontrar?
+                                    </label>
+
+                                    <p class="question-help">
+                                        Puedes seleccionar varias opciones.
+                                    </p>
+
+                                    <div class="interest-grid">
+
+                                        <label class="interest-option">
+                                            <input
+                                                type="checkbox"
+                                                name="intereses[]"
+                                                value="diseno"
+                                            >
+
+                                            <span class="interest-content">
+                                                <i class="bi bi-palette"></i>
+                                                <strong>Diseño</strong>
+                                                <small>
+                                                    Diseño gráfico, UI/UX,
+                                                    ilustración y 3D.
+                                                </small>
+                                            </span>
+
+                                        </label>
+
+                                        <label class="interest-option">
+                                            <input
+                                                type="checkbox"
+                                                name="intereses[]"
+                                                value="programacion"
+                                            >
+
+                                            <span class="interest-content">
+                                                <i class="bi bi-code-slash"></i>
+                                                <strong>Programación</strong>
+                                                <small>
+                                                    Desarrollo web, software
+                                                    y videojuegos.
+                                                </small>
+                                            </span>
+
+                                        </label>
+
+                                        <label class="interest-option">
+                                            <input
+                                                type="checkbox"
+                                                name="intereses[]"
+                                                value="fotografia"
+                                            >
+
+                                            <span class="interest-content">
+                                                <i class="bi bi-camera"></i>
+                                                <strong>Fotografía</strong>
+                                                <small>
+                                                    Fotografía profesional,
+                                                    edición y sesiones.
+                                                </small>
+                                            </span>
+
+                                        </label>
+
+                                        <label class="interest-option">
+                                            <input
+                                                type="checkbox"
+                                                name="intereses[]"
+                                                value="video"
+                                            >
+
+                                            <span class="interest-content">
+                                                <i class="bi bi-camera-reels"></i>
+                                                <strong>Video</strong>
+                                                <small>
+                                                    Edición, animación,
+                                                    producción y contenido.
+                                                </small>
+                                            </span>
+
+                                        </label>
+
+                                        <label class="interest-option">
+                                            <input
+                                                type="checkbox"
+                                                name="intereses[]"
+                                                value="artesanias"
+                                            >
+
+                                            <span class="interest-content">
+                                                <i class="bi bi-box-seam"></i>
+                                                <strong>Artesanías</strong>
+                                                <small>
+                                                    Productos hechos a mano
+                                                    y creaciones únicas.
+                                                </small>
+                                            </span>
+
+                                        </label>
+
+                                        <label class="interest-option">
+                                            <input
+                                                type="checkbox"
+                                                name="intereses[]"
+                                                value="musica"
+                                            >
+
+                                            <span class="interest-content">
+                                                <i class="bi bi-music-note-beamed"></i>
+                                                <strong>Música</strong>
+                                                <small>
+                                                    Producción, composición
+                                                    y servicios musicales.
+                                                </small>
+                                            </span>
+
+                                        </label>
+
+                                        <label class="interest-option">
+                                            <input
+                                                type="checkbox"
+                                                name="intereses[]"
+                                                value="educacion"
+                                            >
+
+                                            <span class="interest-content">
+                                                <i class="bi bi-book"></i>
+                                                <strong>Educación</strong>
+                                                <small>
+                                                    Clases, cursos,
+                                                    asesorías y tutorías.
+                                                </small>
+                                            </span>
+
+                                        </label>
+
+                                        <label class="interest-option">
+                                            <input
+                                                type="checkbox"
+                                                name="intereses[]"
+                                                value="creadores"
+                                            >
+
+                                            <span class="interest-content">
+                                                <i class="bi bi-megaphone"></i>
+                                                <strong>Creadores</strong>
+                                                <small>
+                                                    Contenido digital,
+                                                    redes sociales y marcas.
+                                                </small>
+                                            </span>
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="question-block mt-4"> <!--que quieres hacer-->
+
+                                    <label class="question-title">
+                                        ¿Qué quieres hacer principalmente
+                                        en FreeLink?
+                                    </label>
+
+                                    <div class="goal-grid">
+
+                                        <label class="goal-option">
+
+                                            <input
+                                                type="radio"
+                                                name="objetivo"
+                                                value="contratar"
+                                                required
+                                            >
+
+                                            <span>
+                                                <i class="bi bi-search"></i>
+
+                                                <strong>
+                                                    Encontrar talento
+                                                </strong>
+
+                                                <small>
+                                                    Quiero contratar servicios
+                                                    o encontrar productos.
+                                                </small>
+                                            </span>
+
+                                        </label>
+
+                                        <label class="goal-option">
+
+                                            <input
+                                                type="radio"
+                                                name="objetivo"
+                                                value="ofrecer"
+                                                required
+                                            >
+
+                                            <span>
+                                                <i class="bi bi-briefcase"></i>
+
+                                                <strong>
+                                                    Ofrecer mi talento
+                                                </strong>
+
+                                                <small>
+                                                    Quiero ofrecer servicios
+                                                    y mostrar mi trabajo.
+                                                </small>
+
+                                            </span>
+
+                                        </label>
+
+                                        <label class="goal-option">
+
+                                            <input
+                                                type="radio"
+                                                name="objetivo"
+                                                value="ambos"
+                                                required
+                                            >
+
+                                            <span>
+                                                <i class="bi bi-arrow-left-right"></i>
+
+                                                <strong>
+                                                    Ambas cosas
+                                                </strong>
+
+                                                <small>
+                                                    Quiero contratar y también
+                                                    ofrecer mis servicios.
+                                                </small>
+
+                                            </span>
+
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="register-buttons"> <!--botones-->
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-freelink-outline"
+                                        id="backStep2"
+                                    >
+                                        <i class="bi bi-arrow-left me-2"></i>
+                                        Regresar
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-freelink"
+                                        id="nextStep2"
+                                    >
+                                        Continuar
+                                        <i class="bi bi-arrow-right ms-2"></i>
+                                    </button>
+
+                                </div>
+
+                            </section>
+
+                            <!--confirmacion-->
+                            <section
+                                id="registerStep3"
+                                class="register-form-step"
+                            >
+
+                                <div class="register-success text-center">
+
+                                    <div class="success-icon">
+                                        <i class="bi bi-check-lg"></i>
+                                    </div>
+
+                                    <span class="section-label">
+                                        TODO LISTO
+                                    </span>
+
+                                    <h2>
+                                        Tu cuenta está preparada
+                                    </h2>
+
+                                    <p>
+                                        Hemos guardado tus preferencias.
+                                        Con ellas podremos mostrarte perfiles,
+                                        servicios y publicaciones que sean
+                                        relevantes para ti.
+                                    </p>
+
+                                    <!--resumen-->
+                                    <div class="register-summary">
+
+                                        <div class="summary-item">
+
+                                            <i class="bi bi-person"></i>
+
+                                            <div>
+                                                <small>Nombre</small>
+                                                <strong id="summaryName">
+                                                    —
+                                                </strong>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="summary-item">
+
+                                            <i class="bi bi-envelope"></i>
+
+                                            <div>
+                                                <small>Correo</small>
+                                                <strong id="summaryEmail">
+                                                    —
+                                                </strong>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="summary-item">
+
+                                            <i class="bi bi-stars"></i>
+
+                                            <div>
+                                                <small>Intereses seleccionados</small>
+                                                <strong id="summaryInterests">
+                                                    —
+                                                </strong>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <!--mensaje -->
+                                    <div
+                                        id="registerMessage"
+                                        class="alert d-none mt-4"
+                                        role="alert"
+                                    ></div>
+
+                                    <!--crear cuenta-->
+                                    <button
+                                        type="submit"
+                                        class="btn btn-freelink register-submit"
+                                        id="registerBtn"
+                                    >
+                                        <span id="registerBtnText">
+                                            Crear mi cuenta
+                                        </span>
+
+                                        <span
+                                            id="registerSpinner"
+                                            class="spinner-border spinner-border-sm d-none"
+                                            role="status"
+                                            aria-hidden="true"
+                                        ></span>
+                                    </button>
+
+
+                                    <p class="register-login-link">
+
+                                        ¿Ya tienes una cuenta?
+
+                                        <a href="login.html">
+                                            Iniciar sesión
+                                        </a>
+
+                                    </p>
+
+                                </div>
+
+                            </section>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="freelink-footer"> <!--pie de pagina-->
+
+        <div class="container">
+
+            <div class="row align-items-center gy-3">
+
+                <div class="col-md-6">
+
+                    <a
+                        href="../index.html"
+                        class="footer-logo"
+                    >
+                        Free<span>Link</span>
+                    </a>
+
+                    <p>
+                        Mostrar. Conectar. Vender. Crecer.
+                    </p>
+
+                </div>
+
+                <div class="col-md-6 text-md-end">
+
+                    <small>
+                        2026 FreeLink. Todos los derechos reservados.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+    <script src="../js/auth.js"></script>
+
+</body>
+</html>

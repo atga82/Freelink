@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Marketplace | FreeLink</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!--bootstrap iconos-->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <!-- estilos marketplace-->
+    <link rel="stylesheet" href="../css/marketplace.css">
+</head>
+
+<body class="marketplace-page">
+
+    <header class="marketplace-header"> <!--barra de navegacion-->
+
+        <a href="../index.html" class="logo">
+            Free<span>Link</span>
+        </a>
+
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="feed.html">Explorar</a>
+            <a href="marketplace.html" class="active">
+                Marketplace
+            </a>
+            <a href="mensajes.html">Mensajes</a>
+            <a href="perfil.html">Mi perfil</a>
+        </nav>
+
+        <div class="marketplace-actions">
+
+            <!--Carrito-->
+            <button
+                class="cart-btn"
+                id="cartBtn"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#cartOffcanvas"
+            >
+                <i class="bi bi-cart3"></i>
+
+                <span
+                    class="cart-count"
+                    id="cartCount"
+                >
+                    0
+                </span>
+            </button>
+
+            <!--publicar-->
+            <button
+                class="publish-btn"
+                id="publishBtn"
+                type="button"
+            >
+                <i class="bi bi-plus-lg"></i>
+                Publicar
+            </button>
+
+        </div>
+
+    </header>
+
+    <main> <!--introduccion-->
+
+        <section class="marketplace-hero">
+
+            <div class="marketplace-hero-content">
+
+                <h3>
+                    FREELINK MARKETPLACE
+                </h3>
+
+                <h1>
+                    <span>Compra creaciones.</span>
+                </h1>
+
+                <p>
+                    Contrata servicios profesionales o descubre
+                    productos creados por personas independientes.
+                    Todo desde un mismo lugar.
+                </p>
+
+                <!--buscador-->
+                <form
+                    class="marketplace-search"
+                    id="marketplaceSearchForm"
+                >
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        type="search"
+                        id="marketplaceSearch"
+                        placeholder="¿Qué estás buscando?"
+                        autocomplete="off"
+                    >
+
+                    <button type="submit">
+                        Buscar
+                    </button>
+
+                </form>
+
+                <div class="quick-searches"> <!--búsquedas rápidas-->
+
+                    <span>Popular:</span>
+
+                    <button
+                        type="button"
+                        data-search="fotografía"
+                    >
+                        Fotografía
+                    </button>
+
+                    <button
+                        type="button"
+                        data-search="ilustración"
+                    >
+                        Ilustración
+                    </button>
+
+                    <button
+                        type="button"
+                        data-search="artesanías"
+                    >
+                        Artesanías
+                    </button>
+
+                    <button
+                        type="button"
+                        data-search="modelado 3D"
+                    >
+                        Modelado 3D
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="marketplace-hero-card">
+
+                <div class="hero-card-label">
+                    <i class="bi bi-stars"></i>
+                    DESTACADO
+                </div>
+
+                <div class="hero-product-visual">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+
+                <div class="hero-product-info">
+
+                    <small>
+                        PRODUCTO INDEPENDIENTE
+                    </small>
+
+                    <h3>
+                        Descripción
+                    </h3>
+
+                    <p>
+                        info extendida
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="marketplace-content"> <!--tipo de publicacion-->
+
+            <div class="marketplace-type-tabs">
+
+                <button
+                    class="type-tab active"
+                    data-type="all"
+                    type="button"
+                >
+                    <i class="bi bi-grid"></i>
+                    Todo
+                </button>
+
+                <button
+                    class="type-tab"
+                    data-type="service"
+                    type="button"
+                >
+                    <i class="bi bi-briefcase"></i>
+                    Servicios
+                </button>
+
+                <button
+                    class="type-tab"
+                    data-type="product"
+                    type="button"
+                >
+                    <i class="bi bi-box-seam"></i>
+                    Productos físicos
+                </button>
+
+            </div>
+
+            <div class="categories-section">  <!--categorias-->
+
+                <div class="categories-heading">
+
+                    <div>
+
+                        <small>
+                            EXPLORA
+                        </small>
+
+                        <h2>
+                            Categorías
+                        </h2>
+
+                    </div>
+
+                </div>
+
+                <div
+                    class="categories-grid"
+                    id="categoriesGrid"
+                >
+
+                    <button
+                        class="category-card category-purple active"
+                        data-category="all"
+                        type="button"
+                    >
+                        <i class="bi bi-grid-3x3-gap"></i>
+                        <span>Todo</span>
+                    </button>
+
+                    <button
+                        class="category-card category-green"
+                        data-category="programacion"
+                        type="button"
+                    >
+                        <i class="bi bi-code-slash"></i>
+                        <span>Programación</span>
+                    </button>
+
+                    <button
+                        class="category-card category-pink"
+                        data-category="fotografia"
+                        type="button"
+                    >
+                        <i class="bi bi-camera"></i>
+                        <span>Fotografía</span>
+                    </button>
+
+                    <button
+                        class="category-card category-blue"
+                        data-category="video"
+                        type="button"
+                    >
+                        <i class="bi bi-camera-reels"></i>
+                        <span>Video</span>
+                    </button>
+
+                    <button
+                        class="category-card category-yellow"
+                        data-category="artesanias"
+                        type="button"
+                    >
+                        <i class="bi bi-gem"></i>
+                        <span>Artesanías</span>
+                    </button>
+
+                    <button
+                        class="category-card category-purple-light"
+                        data-category="ilustracion"
+                        type="button"
+                    >
+                        <i class="bi bi-palette"></i>
+                        <span>Ilustración</span>
+                    </button>
+
+                    <button
+                        class="category-card category-red"
+                        data-category="musica"
+                        type="button"
+                    >
+                        <i class="bi bi-brush market-main-icon"></i>
+                        <span>Diseño</span>
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="marketplace-toolbar"> <!--filtros-->
+
+                <div>
+
+                    <span
+                        class="results-count"
+                        id="resultsCount"
+                    >
+                        12 resultados
+                    </span>
+
+                </div>
+
+
+                <div class="toolbar-filters">
+
+                    <!--precio-->
+                    <select
+                        class="marketplace-select"
+                        id="priceFilter"
+                    >
+                        <option value="all">
+                            Cualquier precio
+                        </option>
+
+                        <option value="low">
+                            Menos de $500
+                        </option>
+
+                        <option value="medium">
+                            $500 - $1,500
+                        </option>
+
+                        <option value="high">
+                            Más de $1,500
+                        </option>
+                    </select>
+
+                    <!--el orden-->
+                    <select
+                        class="marketplace-select"
+                        id="sortFilter"
+                    >
+                        <option value="recommended">
+                            Recomendados
+                        </option>
+
+                        <option value="rating">
+                            Mejor valorados
+                        </option>
+
+                        <option value="price-low">
+                            Precio: menor a mayor
+                        </option>
+
+                        <option value="price-high">
+                            Precio: mayor a menor
+                        </option>
+
+                        <option value="newest">
+                            Más recientes
+                        </option>
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!--resultados-->
+            <div
+                class="marketplace-grid"
+                id="marketplaceGrid"
+            >
+
+                <!--servicio 1-->
+                <article
+                    class="market-card"
+                    data-type="service"
+                    data-category="diseno"
+                    data-price="800"
+                    data-rating="4.9"
+                >
+
+                    <div class="market-card-image image-purple">
+
+                        <span class="card-type">
+                            <i class="bi bi-briefcase"></i>
+                            Servicio
+                        </span>
+
+                        <button
+                            class="favorite-btn"
+                            type="button"
+                            title="Guardar"
+                        >
+                            <i class="bi bi-heart"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="market-card-body">
+
+                        <div class="creator-mini">
+
+                            <div class="creator-avatar avatar-purple">
+                                AG
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Angel García
+                                </strong>
+
+                                <span>
+                                    Diseñador 3D
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <small class="market-category">
+                            DISEÑO
+                        </small>
+
+                        <h3>
+                            Modelado 3D para personajes
+                        </h3>
+
+                        <p>
+                            Creo personajes 3D personalizados
+                            para videojuegos y proyectos
+                            audiovisuales.
+                        </p>
+
+                        <div class="market-rating">
+
+                            <i class="bi bi-star-fill"></i>
+
+                            <strong>
+                                4.9
+                            </strong>
+
+                            <span>
+                                (28)
+                            </span>
+
+                        </div>
+
+                        <div class="market-card-bottom">
+
+                            <div>
+                                <small>
+                                    Precio
+                                </small>
+
+                                <strong>
+                                    $800 MXN
+                                </strong>
+                            </div>
+
+                            <button
+                                class="view-market-btn"
+                                type="button"
+                            >
+                                Ver servicio
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                <!--servicio 2-->
+                <article
+                    class="market-card"
+                    data-type="service"
+                    data-category="fotografia"
+                    data-price="600"
+                    data-rating="5"
+                >
+
+                    <div class="market-card-image image-orange">
+
+                        <span class="card-type">
+                            <i class="bi bi-briefcase"></i>
+                            Servicio
+                        </span>
+
+                        <button
+                            class="favorite-btn"
+                            type="button"
+                        >
+                            <i class="bi bi-heart"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="market-card-body">
+
+                        <div class="creator-mini">
+
+                            <div class="creator-avatar avatar-orange">
+                                LM
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Laura Méndez
+                                </strong>
+
+                                <span>
+                                    Fotógrafa
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <small class="market-category">
+                            FOTOGRAFÍA
+                        </small>
+
+                        <h3>
+                            Sesión fotográfica profesional
+                        </h3>
+
+                        <p>
+                            Fotografía para productos,
+                            retratos y proyectos creativos.
+                        </p>
+
+                        <div class="market-rating">
+
+                            <i class="bi bi-star-fill"></i>
+
+                            <strong>
+                                5.0
+                            </strong>
+
+                            <span>
+                                (16)
+                            </span>
+
+                        </div>
+
+                        <div class="market-card-bottom">
+
+                            <div>
+                                <small>
+                                    Precio
+                                </small>
+
+                                <strong>
+                                    $600 MXN
+                                </strong>
+                            </div>
+
+                            <button
+                                class="view-market-btn"
+                                type="button"
+                            >
+                                Ver servicio
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                <!--producto fisico 1-->
+                <article
+                    class="market-card"
+                    data-type="product"
+                    data-category="artesanias"
+                    data-price="450"
+                    data-rating="4.8"
+                >
+
+                    <div class="market-card-image image-green">
+
+                        <span class="card-type">
+                            <i class="bi bi-box-seam"></i>
+                            Producto
+                        </span>
+
+                        <button
+                            class="favorite-btn"
+                            type="button"
+                        >
+                            <i class="bi bi-heart"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="market-card-body">
+
+                        <div class="creator-mini">
+
+                            <div class="creator-avatar avatar-green">
+                                MS
+                            </div>
+
+                            <div>
+                                <strong>
+                                    María Sánchez
+                                </strong>
+
+                                <span>
+                                    Artesana
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <small class="market-category">
+                            ARTESANÍAS
+                        </small>
+
+                        <h3>
+                            Decoración artesanal
+                        </h3>
+
+                        <p>
+                            Pieza decorativa elaborada
+                            completamente a mano.
+                        </p>
+
+
+                        <div class="product-stock">
+                            <i class="bi bi-box"></i>
+                            8 disponibles
+                        </div>
+
+                        <div class="market-rating">
+
+                            <i class="bi bi-star-fill"></i>
+
+                            <strong>
+                                4.8
+                            </strong>
+
+                            <span>
+                                (21)
+                            </span>
+
+                        </div>
+
+                        <div class="market-card-bottom">
+
+                            <div>
+
+                                <strong>
+                                    $450 MXN
+                                </strong>
+
+                                <small>
+                                    + envío
+                                </small>
+
+                            </div>
+
+                            <button
+                                class="add-cart-btn"
+                                type="button"
+                                data-product="Decoración artesanal"
+                                data-price="450"
+                            >
+                                <i class="bi bi-cart-plus"></i>
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                <!--producto fisico 2-->
+                <article
+                    class="market-card"
+                    data-type="product"
+                    data-category="ilustracion"
+                    data-price="300"
+                    data-rating="4.9"
+                >
+
+                    <div class="market-card-image image-pink">
+
+                        <span class="card-type">
+                            <i class="bi bi-box-seam"></i>
+                            Producto
+                        </span>
+
+                        <button
+                            class="favorite-btn"
+                            type="button"
+                        >
+                            <i class="bi bi-heart"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="market-card-body">
+
+                        <div class="creator-mini">
+
+                            <div class="creator-avatar avatar-pink">
+                                JP
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Juan Pérez
+                                </strong>
+
+                                <span>
+                                    Ilustrador
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <small class="market-category">
+                            ILUSTRACIÓN
+                        </small>
+
+                        <h3>
+                            Lámina ilustrada
+                        </h3>
+
+                        <p>
+                            Ilustración impresa en papel
+                            artístico de alta calidad.
+                        </p>
+
+                        <div class="product-stock">
+                            <i class="bi bi-box"></i>
+                            15 disponibles
+                        </div>
+
+                        <div class="market-rating">
+
+                            <i class="bi bi-star-fill"></i>
+
+                            <strong>
+                                4.9
+                            </strong>
+
+                            <span>
+                                (34)
+                            </span>
+
+                        </div>
+
+                        <div class="market-card-bottom">
+
+                            <div>
+
+                                <strong>
+                                    $300 MXN
+                                </strong>
+
+                                <small>
+                                    + envío
+                                </small>
+
+                            </div>
+
+                            <button
+                                class="add-cart-btn"
+                                type="button"
+                                data-product="Lámina ilustrada"
+                                data-price="300"
+                            >
+                                <i class="bi bi-cart-plus"></i>
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                <!--servicio 3-->
+                <article
+                    class="market-card"
+                    data-type="service"
+                    data-category="programacion"
+                    data-price="1200"
+                    data-rating="4.7"
+                >
+
+                    <div class="market-card-image image-blue">
+
+                        <span class="card-type">
+                            <i class="bi bi-briefcase"></i>
+                            Servicio
+                        </span>
+
+                        <i class="bi bi-code-slash market-main-icon"></i>
+
+                        <button
+                            class="favorite-btn"
+                            type="button"
+                        >
+                            <i class="bi bi-heart"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="market-card-body">
+
+                        <div class="creator-mini">
+
+                            <div class="creator-avatar avatar-blue">
+                                CR
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Carlos Ramírez
+                                </strong>
+
+                                <span>
+                                    Desarrollador web
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <small class="market-category">
+                            PROGRAMACIÓN
+                        </small>
+
+                        <h3>
+                            Desarrollo de páginas web
+                        </h3>
+
+                        <p>
+                            Desarrollo de sitios web
+                            personalizados para proyectos
+                            independientes.
+                        </p>
+
+                        <div class="market-rating">
+
+                            <i class="bi bi-star-fill"></i>
+
+                            <strong>
+                                4.7
+                            </strong>
+
+                            <span>
+                                (19)
+                            </span>
+
+                        </div>
+
+                        <div class="market-card-bottom">
+
+                            <div>
+                                <small>
+                                    Precio
+                                </small>
+
+                                <strong>
+                                    $1,200 MXN
+                                </strong>
+                            </div>
+
+                            <button
+                                class="view-market-btn"
+                                type="button"
+                            >
+                                Ver servicio
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                <!--producto fisico 3-->
+                <article
+                    class="market-card"
+                    data-type="product"
+                    data-category="diseno"
+                    data-price="650"
+                    data-rating="4.9"
+                >
+
+                    <div class="market-card-image image-yellow">
+
+                        <span class="card-type">
+                            <i class="bi bi-box-seam"></i>
+                            Producto
+                        </span>
+
+                        <button
+                            class="favorite-btn"
+                            type="button"
+                        >
+                            <i class="bi bi-heart"></i>
+                        </button>
+
+                    </div>
+
+                    <div class="market-card-body">
+
+                        <div class="creator-mini">
+
+                            <div class="creator-avatar avatar-purple">
+                                AG
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Angel García
+                                </strong>
+
+                                <span>
+                                    Diseñador
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <small class="market-category">
+                            DISEÑO
+                        </small>
+
+                        <h3>
+                            Poster artístico personalizado
+                        </h3>
+
+                        <p>
+                            Poster impreso con diseño
+                            personalizado para tu espacio.
+                        </p>
+
+                        <div class="product-stock">
+                            <i class="bi bi-box"></i>
+                            6 disponibles
+                        </div>
+
+                        <div class="market-rating">
+
+                            <i class="bi bi-star-fill"></i>
+
+                            <strong>
+                                4.9
+                            </strong>
+
+                            <span>
+                                (12)
+                            </span>
+
+                        </div>
+
+                        <div class="market-card-bottom">
+
+                            <div>
+
+                                <strong>
+                                    $650 MXN
+                                </strong>
+
+                                <small>
+                                    + envío
+                                </small>
+
+                            </div>
+
+                            <button
+                                class="add-cart-btn"
+                                type="button"
+                                data-product="Poster artístico personalizado"
+                                data-price="650"
+                            >
+                                <i class="bi bi-cart-plus"></i>
+                                Agregar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+            <!--sin resultados-->
+            <div
+                class="no-results d-none"
+                id="noResults"
+            >
+
+                <i class="bi bi-search"></i>
+
+                <h3>
+                    No encontramos resultados
+                </h3>
+
+                <p>
+                    Intenta con otra búsqueda o categoría.
+                </p>
+
+                <button
+                    id="clearFilters"
+                    type="button"
+                >
+                    Limpiar filtros
+                </button>
+
+            </div>
+
+            <!--paginacion-->
+            <nav
+                class="market-pagination"
+                aria-label="Paginación del marketplace"
+            >
+
+                <button
+                    class="pagination-btn"
+                    type="button"
+                    disabled
+                >
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+
+                <button
+                    class="pagination-number active"
+                    type="button"
+                >
+                    1
+                </button>
+
+                <button
+                    class="pagination-number"
+                    type="button"
+                >
+                    2
+                </button>
+
+                <button
+                    class="pagination-number"
+                    type="button"
+                >
+                    3
+                </button>
+
+                <button
+                    class="pagination-btn"
+                    type="button"
+                >
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+
+            </nav>
+
+        </section>
+
+    </main>
+
+    <!--carrito boostrap-->
+    <div
+        class="offcanvas offcanvas-end"
+        tabindex="-1"
+        id="cartOffcanvas"
+    >
+
+        <div class="offcanvas-header">
+
+            <h5 class="offcanvas-title">
+                <i class="bi bi-cart3"></i>
+                Mi carrito
+            </h5>
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+            ></button>
+
+        </div>
+
+        <div class="offcanvas-body">
+
+            <div
+                id="cartItems"
+                class="cart-items"
+            >
+
+                <div
+                    class="empty-cart"
+                    id="emptyCart"
+                >
+
+                    <i class="bi bi-cart-x"></i>
+
+                    <h4>
+                        Tu carrito está vacío
+                    </h4>
+
+                    <p>
+                        Agrega productos del marketplace
+                        para comenzar.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="cart-summary">
+
+                <div class="cart-summary-row">
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <strong id="cartSubtotal">
+                        $0 MXN
+                    </strong>
+                </div>
+
+                <div class="cart-summary-row">
+                    <span>
+                        Envío
+                    </span>
+
+                    <strong id="cartShipping">
+                        $0 MXN
+                    </strong>
+                </div>
+
+                <div class="cart-summary-total">
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="cartTotal">
+                        $0 MXN
+                    </strong>
+                </div>
+
+                <button
+                    class="checkout-btn"
+                    id="checkoutBtn"
+                    type="button"
+                    disabled
+                >
+                    Continuar con la compra
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        class="modal fade"
+        id="publishModal"
+        tabindex="-1"
+        aria-hidden="true"
+    >
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content publish-modal">
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <small>
+                            FREELINK MARKETPLACE
+                        </small>
+
+                        <h5 class="modal-title">
+                            ¿Qué quieres publicar?
+                        </h5>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                    ></button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="publish-options">
+
+                        <button
+                            class="publish-option publish-service"
+                            id="publishService"
+                            type="button"
+                        >
+
+                            <i class="bi bi-briefcase"></i>
+
+                            <div>
+                                <strong>
+                                    Servicio
+                                </strong>
+
+                                <span>
+                                    Ofrece tus habilidades
+                                    profesionales.
+                                </span>
+                            </div>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </button>
+
+                        <button
+                            class="publish-option publish-product"
+                            id="publishProduct"
+                            type="button"
+                        >
+
+                            <i class="bi bi-box-seam"></i>
+
+                            <div>
+                                <strong>
+                                    Producto físico
+                                </strong>
+
+                                <span>
+                                    Vende una creación
+                                    independiente.
+                                </span>
+                            </div>
+
+                            <i class="bi bi-chevron-right"></i>
+
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="freelink-footer"> <!--pie de pagina-->
+
+        <div>
+
+            <b class="footer-logo">
+                Free<span>Link</span>
+            </b>
+
+            <p>
+                Mostrar. Conectar. Vender. Crecer.
+            </p>
+
+        </div>
+
+        <div class="col-md-6 text-md-end">
+
+                    <small>
+                        </br>
+                        2026 FreeLink. Todos los derechos reservados.
+                    </small>
+
+        </div>
+        
+    </footer>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+    <script src="../js/marketplace.js"></script>
+</body>
+</html>
