@@ -505,15 +505,6 @@ footer a:hover {
     color: white;
 }
 
-.modal {
-    position: fixed;
-    inset: 0;
-    background: #171129aa;
-    display: grid;
-    place-items: center;
-    padding: 20px;
-    z-index: 2000;
-}
 
 .hidden {
     display: none;
