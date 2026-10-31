@@ -7,19 +7,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const textoVistaPrevia = document.getElementById("textoVistaPrevia");
     const multimediaVistaPrevia = document.getElementById("multimediaVistaPrevia");
     const mensajePublicacion = document.getElementById("mensajePublicacion");
-
-    // Archivos seleccionados por el usuario.
-    let archivosSeleccionados = [];
+    const zonaArchivo = document.getElementById("zonaSeleccionArchivo");
+    const radiosTipo = document.querySelectorAll(
+        'input[name="tipo_contenido"]'
+    );
 
     const tiposPermitidos = [
         "image/jpeg",
         "image/png",
+        "image/gif",
         "image/webp",
         "video/mp4",
         "video/webm"
     ];
 
-    // Formatear el tamaño de un archivo.
+    const limiteBytes = 50 * 1024 * 1024;
+    let urlVistaPrevia = null;
+
+    function tipoSeleccionado() {
+        return document.querySelector(
+            'input[name="tipo_contenido"]:checked'
+        )?.value || "imagen";
+    }
+
     function formatearTamano(bytes) {
         if (bytes < 1024 * 1024) {
             return `${(bytes / 1024).toFixed(1)} KB`;
@@ -28,41 +38,69 @@ document.addEventListener("DOMContentLoaded", () => {
         return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     }
 
-    // Actualizar el contador y el texto de la vista previa.
-    function actualizarTexto() {
-        const texto = campoTexto.value;
-
-        contadorTexto.textContent = texto.length;
-
-        textoVistaPrevia.textContent =
-            texto.trim() || "Tu texto aparecerá aquí cuando empieces a escribir.";
-    }
-
-    // Mostrar mensajes debajo del formulario.
     function mostrarMensaje(mensaje) {
         mensajePublicacion.textContent = mensaje;
         mensajePublicacion.hidden = false;
     }
 
-    // Crear un elemento visual para cada archivo.
-    function crearTarjetaArchivo(archivo, indice) {
+    function actualizarTexto() {
+        contadorTexto.textContent = campoTexto.value.length;
+        textoVistaPrevia.textContent =
+            campoTexto.value.trim() ||
+            "Tu publicación aparecerá aquí.";
+    }
+
+    function actualizarTipoPublicacion() {
+        const tipo = tipoSeleccionado();
+
+        zonaArchivo.hidden = tipo === "texto";
+
+        inputArchivos.accept =
+            tipo === "imagen"
+                ? "image/jpeg,image/png,image/gif,image/webp"
+                : "video/mp4,video/webm";
+
+        if (
+            inputArchivos.files.length > 0 &&
+            tipo === "texto"
+        ) {
+            inputArchivos.value = "";
+            actualizarVistaPreviaArchivo();
+        }
+
+        if (tipo === "imagen" || tipo === "video") {
+            const archivo = inputArchivos.files[0];
+
+            if (archivo) {
+                const esImagen = archivo.type.startsWith("image/");
+                const esVideo = archivo.type.startsWith("video/");
+
+                if (
+                    (tipo === "imagen" && !esImagen) ||
+                    (tipo === "video" && !esVideo)
+                ) {
+                    inputArchivos.value = "";
+                    actualizarVistaPreviaArchivo();
+                }
+            }
+        }
+    }
+
+    function actualizarVistaPreviaArchivo() {
+        if (urlVistaPrevia) {
+            URL.revokeObjectURL(urlVistaPrevia);
+            urlVistaPrevia = null;
+        }
+
+        listaArchivos.replaceChildren();
+        multimediaVistaPrevia.replaceChildren();
+
+        const archivo = inputArchivos.files[0];
+
+        if (!archivo) return;
+
         const tarjeta = document.createElement("div");
         tarjeta.className = "archivo-seleccionado";
-
-        if (archivo.type.startsWith("image/")) {
-            const miniatura = document.createElement("img");
-            miniatura.className = "miniatura-archivo";
-            miniatura.src = URL.createObjectURL(archivo);
-            miniatura.alt = `Vista previa de ${archivo.name}`;
-
-            tarjeta.appendChild(miniatura);
-        } else {
-            const icono = document.createElement("div");
-            icono.className = "icono-archivo";
-            icono.innerHTML = '<i class="bi bi-camera-video"></i>';
-
-            tarjeta.appendChild(icono);
-        }
 
         const datos = document.createElement("div");
         datos.className = "datos-archivo";
@@ -75,116 +113,132 @@ document.addEventListener("DOMContentLoaded", () => {
 
         datos.append(nombre, tamano);
         tarjeta.appendChild(datos);
+        listaArchivos.appendChild(tarjeta);
 
-        const botonQuitar = document.createElement("button");
-        botonQuitar.type = "button";
-        botonQuitar.className = "quitar-archivo";
-        botonQuitar.setAttribute("aria-label", `Quitar ${archivo.name}`);
-        botonQuitar.innerHTML = '<i class="bi bi-x-lg"></i>';
+        urlVistaPrevia = URL.createObjectURL(archivo);
 
-        botonQuitar.addEventListener("click", () => {
-            archivosSeleccionados.splice(indice, 1);
-            actualizarArchivos();
-        });
-
-        tarjeta.appendChild(botonQuitar);
-
-        return tarjeta;
+        if (archivo.type.startsWith("image/")) {
+            const imagen = document.createElement("img");
+            imagen.src = urlVistaPrevia;
+            imagen.alt = `Vista previa de ${archivo.name}`;
+            multimediaVistaPrevia.appendChild(imagen);
+        } else if (archivo.type.startsWith("video/")) {
+            const video = document.createElement("video");
+            video.src = urlVistaPrevia;
+            video.controls = true;
+            video.preload = "metadata";
+            video.setAttribute("aria-label", `Vista previa de ${archivo.name}`);
+            multimediaVistaPrevia.appendChild(video);
+        }
     }
 
-    // Dibujar la lista de archivos y la vista previa multimedia.
-    function actualizarArchivos() {
-        listaArchivos.replaceChildren();
-        multimediaVistaPrevia.replaceChildren();
-
-        archivosSeleccionados.forEach((archivo, indice) => {
-            listaArchivos.appendChild(
-                crearTarjetaArchivo(archivo, indice)
-            );
-
-            const urlTemporal = URL.createObjectURL(archivo);
-
-            if (archivo.type.startsWith("image/")) {
-                const imagen = document.createElement("img");
-                imagen.src = urlTemporal;
-                imagen.alt = `Imagen: ${archivo.name}`;
-                multimediaVistaPrevia.appendChild(imagen);
-            } else if (archivo.type.startsWith("video/")) {
-                const video = document.createElement("video");
-                video.src = urlTemporal;
-                video.controls = true;
-                video.preload = "metadata";
-                video.setAttribute("aria-label", `Video: ${archivo.name}`);
-                multimediaVistaPrevia.appendChild(video);
-            }
+    radiosTipo.forEach(radio => {
+        radio.addEventListener("change", () => {
+            actualizarTipoPublicacion();
+            mensajePublicacion.hidden = true;
         });
-    }
+    });
 
-    // Detectar cuando se escribe en el campo de texto.
     campoTexto.addEventListener("input", () => {
         actualizarTexto();
         mensajePublicacion.hidden = true;
     });
 
-    // Agregar los archivos elegidos sin duplicarlos.
     inputArchivos.addEventListener("change", () => {
-        const nuevosArchivos = Array.from(inputArchivos.files);
-        const rechazados = [];
+        const archivo = inputArchivos.files[0];
+        const tipo = tipoSeleccionado();
 
-        nuevosArchivos.forEach((archivo) => {
-            if (!tiposPermitidos.includes(archivo.type)) {
-                rechazados.push(archivo.name);
-                return;
-            }
-
-            const yaExiste = archivosSeleccionados.some(
-                (existente) =>
-                    existente.name === archivo.name &&
-                    existente.size === archivo.size &&
-                    existente.lastModified === archivo.lastModified
-            );
-
-            if (!yaExiste) {
-                archivosSeleccionados.push(archivo);
-            }
-        });
-
-        actualizarArchivos();
-
-        if (rechazados.length > 0) {
-            mostrarMensaje(
-                `No se aceptaron estos archivos: ${rechazados.join(", ")}. ` +
-                "Selecciona imágenes JPG, PNG o WEBP, o videos MP4 o WEBM."
-            );
-        } else {
-            mensajePublicacion.hidden = true;
+        if (!archivo) {
+            actualizarVistaPreviaArchivo();
+            return;
         }
 
-        // Permitir volver a elegir el mismo archivo.
-        inputArchivos.value = "";
-    });
-
-    // Por ahora, el formulario solo funciona en el frontend
-    formulario.addEventListener("submit", (evento) => {
-        evento.preventDefault();
-
-        const texto = campoTexto.value.trim();
-
-        if (!texto && archivosSeleccionados.length === 0) {
+        if (!tiposPermitidos.includes(archivo.type)) {
+            inputArchivos.value = "";
+            actualizarVistaPreviaArchivo();
             mostrarMensaje(
-                "Escribe algo o agrega una imagen o un video antes de continuar."
+                "Formato no permitido. Usa JPG, PNG, GIF, WEBP, MP4 o WEBM."
             );
             return;
         }
 
-        mostrarMensaje(
-    "La vista previa está lista. La publicación todavía no se guarda: " +
-    "falta conectar el formulario con PHP y MySQL."
-        );
+        if (
+            (tipo === "imagen" && !archivo.type.startsWith("image/")) ||
+            (tipo === "video" && !archivo.type.startsWith("video/"))
+        ) {
+            inputArchivos.value = "";
+            actualizarVistaPreviaArchivo();
+            mostrarMensaje(
+                tipo === "imagen"
+                    ? "Selecciona un archivo de imagen."
+                    : "Selecciona un archivo de video."
+            );
+            return;
+        }
+
+        if (archivo.size === 0 || archivo.size > limiteBytes) {
+            inputArchivos.value = "";
+            actualizarVistaPreviaArchivo();
+            mostrarMensaje("El archivo debe pesar más de 0 bytes y no superar 50 MB.");
+            return;
+        }
+
+        actualizarVistaPreviaArchivo();
+        mensajePublicacion.hidden = true;
     });
 
-    // Estado inicial.
+    formulario.addEventListener("submit", (evento) => {
+        const tipo = tipoSeleccionado();
+        const texto = campoTexto.value.trim();
+        const archivo = inputArchivos.files[0];
+
+        if (texto.length > 2000) {
+            evento.preventDefault();
+            mostrarMensaje("El texto no puede superar los 2000 caracteres.");
+            return;
+        }
+
+        if (tipo === "texto") {
+            if (!texto) {
+                evento.preventDefault();
+                mostrarMensaje("Escribe algo antes de publicar.");
+                return;
+            }
+        } else {
+            if (!archivo) {
+                evento.preventDefault();
+                mostrarMensaje("Selecciona una imagen o un video antes de publicar.");
+                return;
+            }
+
+            if (tipo === "imagen" && !archivo.type.startsWith("image/")) {
+                evento.preventDefault();
+                mostrarMensaje("El tipo seleccionado requiere una imagen.");
+                return;
+            }
+
+            if (tipo === "video" && !archivo.type.startsWith("video/")) {
+                evento.preventDefault();
+                mostrarMensaje("El tipo seleccionado requiere un video.");
+                return;
+            }
+        }
+
+        // El navegador envia el formulario a crear_publicacion.php
+        const botonPublicar = formulario.querySelector(
+            'button[type="submit"]'
+        );
+
+        if (botonPublicar) {
+            botonPublicar.disabled = true;
+            botonPublicar.textContent = "Publicando...";
+        }
+    });
+
     actualizarTexto();
-    actualizarArchivos();
+    actualizarTipoPublicacion();
+    actualizarVistaPreviaArchivo();
 });
+ 
+ 
  

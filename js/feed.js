@@ -1,8 +1,4 @@
-const publicacionesIniciales = [
-  { id: 1, autor: 'Angel García', iniciales: 'AG', profesion: 'Diseñador 3D', tiempo: 'Hace 25 min', texto: 'El modelo de mi nuevo personaje.', etiqueta: 'Diseño 3D', categoria: 'design', tipo: 'image', avatar: 'purple', media: 'Imagen del proyecto 3D', likes: 128, comentarios: [{ autor: 'Laura Méndez', iniciales: 'LM', avatar: 'orange', texto: 'Está increíble.' }, { autor: 'Juan Pérez', iniciales: 'JP', avatar: 'green', texto: '¿Cuánto tiempo te tomó?' }] },
-  { id: 2, autor: 'Sofía Ramírez', iniciales: 'SR', profesion: 'Fotógrafa', tiempo: 'Hace 1 h', texto: 'Les comparto un detrás de cámaras de mi última sesión fotográfica.', etiqueta: 'Fotografía', categoria: 'photography', tipo: 'video', avatar: 'orange', media: 'Aquí se cargará el video', likes: 86, comentarios: [{ autor: 'Mariana Gómez', iniciales: 'MG', avatar: 'pink', texto: 'El resultado es asombroso.' }] },
-  { id: 3, autor: 'Diego Velázquez', iniciales: 'DV', profesion: 'Ilustrador', tiempo: 'Hace 2 h', texto: 'Mi nueva ilustración digital.', etiqueta: 'Ilustración', categoria: 'art', tipo: 'image', avatar: 'green', media: 'Imagen de ilustración digital', likes: 214, comentarios: [] }
-];
+const publicacionesIniciales = [];
 
 const sugerencias = [
   { nombre: 'Ana Castillo', iniciales: 'AC', profesion: 'Diseñadora', avatar: 'purple' },
@@ -19,9 +15,9 @@ const postText = document.querySelector('#postText');
 const postFile = document.querySelector('#postFile');
 const fileName = document.querySelector('#fileName');
 const postFormMessage = document.querySelector('#postFormMessage');
-let publicaciones = [...publicacionesIniciales];
+let publicaciones = [];
 let filtroActual = 'all';
-let siguienteId = 4;
+let siguienteId = 1;
 
 const escaparHTML = (valor = '') => String(valor).replace(/[&<>"']/g, caracter => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[caracter]);
 
@@ -34,19 +30,116 @@ function renderizarComentarios(comentarios) {
 }
 
 function renderizarPublicacion(post) {
-  const medio = post.url
+  
+const medio = post.tipo === 'text'
+  ? ''
+  : post.url
     ? (post.tipo === 'video'
-      ? `<video src="${post.url}" controls preload="metadata"></video>`
-      : `<img src="${post.url}" alt="Archivo compartido por ${escaparHTML(post.autor)}">`)
-    : `<div class="media-placeholder ${post.avatar === 'orange' ? 'orange' : post.avatar === 'green' ? 'green' : 'purple'}-media"><i class="bi ${post.tipo === 'video' ? 'bi-play-btn' : post.categoria === 'art' ? 'bi-palette' : 'bi-image'}"></i><span>${escaparHTML(post.media || 'Contenido multimedia')}</span></div>`;
+      ? `<video src="${escaparHTML(post.url)}" controls preload="metadata"></video>`
+      : `<img src="${escaparHTML(post.url)}" alt="Archivo compartido por ${escaparHTML(post.autor)}">`)
+    : `<div class="media-placeholder purple-media">
+         <i class="bi ${post.tipo === 'video' ? 'bi-play-btn' : 'bi-image'}"></i>
+         <span>${escaparHTML(post.media || 'Contenido multimedia')}</span>
+       </div>`;
 
   return `<article class="post-card" data-type="${escaparHTML(post.tipo)}" data-category="${escaparHTML(post.categoria)}" data-post-id="${post.id}">
     <div class="post-header"><div class="post-user"><span class="post-avatar avatar-${escaparHTML(post.avatar)}">${escaparHTML(post.iniciales)}</span><div><strong>${escaparHTML(post.autor)}</strong><span>${escaparHTML(post.profesion)} · ${escaparHTML(post.tiempo)}</span></div></div><button class="post-menu" type="button" aria-label="Más opciones"><i class="bi bi-three-dots"></i></button></div>
     <div class="post-content"><p>${escaparHTML(post.texto)}</p><div class="post-tags"><span>#${escaparHTML(post.etiqueta)}</span></div></div>
-    <div class="post-media ${post.tipo === 'video' ? 'video-media' : ''}">${medio}</div>
+    ${medio ? `<div class="post-media ${post.tipo === 'video' ? 'video-media' : ''}">${medio}</div>` : ''} 
     <div class="post-actions"><button class="action-btn like-btn" type="button" aria-pressed="false"><i class="bi bi-heart"></i><span>${post.likes}</span></button><button class="action-btn comment-btn" type="button"><i class="bi bi-chat"></i><span>${post.comentarios.length}</span></button></div>
     <section class="comments-section"><div class="comments-title">Comentarios</div><div class="comments-list">${renderizarComentarios(post.comentarios)}</div><form class="comment-form"><span class="comment-avatar avatar-user">CG</span><input type="text" name="comment" maxlength="300" placeholder="Escribe un comentario..." aria-label="Escribe un comentario" required><button type="submit" aria-label="Enviar comentario"><i class="bi bi-send"></i></button></form></section>
   </article>`;
+}
+
+
+async function cargarPublicaciones() {
+  postsContainer.innerHTML =
+    '<p class="empty-state">Cargando publicaciones...</p>';
+
+  try {
+    const respuesta = await fetch('../php/obtener_publicaciones.php');
+
+    if (!respuesta.ok) {
+      throw new Error('Error al consultar las publicaciones.');
+    }
+
+    const datos = await respuesta.json();
+
+    if (!Array.isArray(datos)) {
+      throw new Error(
+        datos.error || 'La respuesta del servidor no es válida.'
+      );
+    }
+
+    publicaciones = datos.map(post => {
+      const nombre = post.nombre || 'Usuario';
+      const partesNombre = nombre.trim().split(/\s+/);
+
+      const tipo = post.tipo_contenido === 'imagen'
+        ? 'image'
+        : post.tipo_contenido === 'video'
+          ? 'video'
+          : 'text';
+
+      const fecha = post.fecha_publicacion
+        ? new Date(post.fecha_publicacion.replace(' ', 'T'))
+        : null;
+
+      const tiempo = fecha && !Number.isNaN(fecha.getTime())
+        ? fecha.toLocaleString('es-MX', {
+            dateStyle: 'short',
+            timeStyle: 'short'
+          })
+        : 'Fecha no disponible';
+
+     let url = '';
+
+     if (
+       post.tiene_multimedia &&
+       (post.tipo_contenido === 'imagen' ||
+       post.tipo_contenido === 'video')
+       ) {
+       url = '../php/obtener_multimedia.php?id='
+       + encodeURIComponent(post.id_publicacion);
+      }
+
+      return {
+        id: Number(post.id_publicacion),
+        autor: nombre,
+        iniciales: partesNombre
+          .slice(0, 2)
+          .map(palabra => palabra.charAt(0).toUpperCase())
+          .join(''),
+        profesion: 'Usuario de FreeLink',
+        tiempo,
+        texto: post.contenido || '',
+        etiqueta: post.tipo_contenido === 'imagen'
+          ? 'Imagen'
+          : post.tipo_contenido === 'video'
+            ? 'Video'
+            : 'Publicación',
+        categoria: 'all',
+        tipo,
+        avatar: 'purple',
+        media: post.nombre_archivo || 'Publicación de texto',
+        url,
+        likes: 0,
+        comentarios: []
+      };
+    });
+
+    siguienteId = publicaciones.length
+      ? Math.max(...publicaciones.map(post => post.id)) + 1
+      : 1;
+
+    renderizarPublicaciones();
+
+  } catch (error) {
+    console.error('Error al cargar el feed:', error);
+
+    postsContainer.innerHTML =
+      '<p class="empty-state">No se pudieron cargar las publicaciones. Verifica la conexión con el servidor.</p>';
+  }
 }
 
 function renderizarPublicaciones() {
@@ -141,7 +234,9 @@ createPostForm.addEventListener('submit', event => {
   }
   const categoria = document.querySelector('#postCategory').value;
   const categorias = { design: 'Diseño', programming: 'Programación', photography: 'Fotografía', art: 'Arte', education: 'Educación', other: 'Otro' };
-  const url = archivo ? URL.createObjectURL(archivo) : '';
+  const url = post.tiene_multimedia && post.url_multimedia
+    ? post.url_multimedia
+    : ''; 
   publicaciones.unshift({ id: siguienteId++, autor: 'Cesar García', iniciales: 'CG', profesion: 'Creador independiente', tiempo: 'Ahora', texto: texto || 'Comparto un nuevo proyecto.', etiqueta: categorias[categoria], categoria, tipo: archivo ? tipo : 'image', avatar: 'purple', media: archivo ? archivo.name : 'Publicación de texto', url, likes: 0, comentarios: [] });
   filtroActual = 'all';
   document.querySelectorAll('.filter-btn').forEach(boton => boton.classList.toggle('active', boton.dataset.filter === 'all'));
@@ -151,7 +246,12 @@ createPostForm.addEventListener('submit', event => {
   fileName.textContent = '';
 });
 
+console.log("FEED.JS ACTUALIZADO");
+
 renderizarSugerencias();
-renderizarPublicaciones();
+
+cargarPublicaciones().then(() => {
+  console.log("Publicaciones cargadas:", publicaciones);
+}); 
  
  
