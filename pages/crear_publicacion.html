@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear publicación | FreeLink</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/crear_publicacion.css">
+</head>
+
+<body class="crear-publicacion-page">
+
+    <header class="navbar-freelink">
+        <a href="../index.html" class="marca-freelink">FreeLink<span>.</span></a>
+
+        <nav class="nav-enlaces">
+            <a href="feed.html"><i class="fa-solid fa-house"></i> Inicio</a>
+            <a href="marketplace.html"><i class="fa-solid fa-store"></i> Marketplace</a>
+            <a href="mensajes.html"><i class="fa-solid fa-comments"></i> Mensajes</a>
+            <a href="perfil.html"><i class="fa-solid fa-user"></i> Mi perfil</a>
+        </nav>
+    </header>
+
+    <main class="contenedor-publicacion">
+
+        <div class="encabezado-publicacion">
+            <div>
+                <a href="feed.html" class="volver-feed">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al feed
+                </a>
+                <h1>Crear publicación</h1>
+            </div>
+        </div>
+
+        <form
+         id="formPublicacion"
+         class="tarjeta-publicacion"
+         action="../php/crear_publicacion.php"
+         method="POST"
+         enctype="multipart/form-data"
+        >
+
+            <div class="campo-publicacion">
+                <textarea
+                    id="textoPublicacion"
+                    name="contenido"
+                    rows="5"
+                    maxlength="2000"
+                    placeholder="¿Qué quieres compartir con la comunidad?"
+                ></textarea>
+
+                <div class="contador-texto">
+                    <span id="contadorTexto">0</span>/2000
+                </div>
+            </div>
+
+                        <div class="multimedia-publicacion">
+                <p class="titulo-tipo-publicacion">¿Qué deseas compartir?</p>
+
+                
+             <div class="opciones-tipo-publicacion">
+                   <label class="boton-archivo opcion-tipo">
+                        <input
+                            type="radio"
+                            name="tipo_contenido"
+                            value="imagen"
+                            checked
+                        >
+                        <i class="fa-regular fa-image"></i>
+                        <span>Fotos</span>
+                    </label>
+
+                    <label class="boton-archivo opcion-tipo">
+                        <input
+                            type="radio"
+                            name="tipo_contenido"
+                            value="video"
+                        >
+                        <i class="fa-solid fa-video"></i>
+                        <span>Videos</span>
+                    </label>
+
+                    <label class="boton-archivo opcion-tipo">
+                        <input
+                            type="radio"
+                            name="tipo_contenido"
+                            value="texto"
+                        >
+                        <i class="fa-solid fa-align-left"></i>
+                        <span>Solo texto</span>
+                    </label>
+             </div>
+
+             <div class="campo-categoria">
+                    <label for="id_categoria">Categoría de la publicación</label>
+
+                    <select id="id_categoria" name="id_categoria" required>
+                        <option value="">Selecciona una categoría</option>
+                        <option value="1">Diseño</option>
+                        <option value="2">Programación</option>
+                        <option value="3">Fotografía</option>
+                        <option value="4">Arte</option>
+                    </select>
+             </div>
+
+                <div id="zonaSeleccionArchivo" class="zona-seleccion-archivo">
+                    <label for="archivosPublicacion" class="recuadro-seleccion-archivo">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <strong>Selecciona un archivo</strong>
+                        <span id="textoSeleccionArchivo">
+                            Ya sea video o imagen
+                        </span>
+                        <span class="formatos-aceptados" id="formatosAceptados">
+                            .JPG, .PNG, .MP4, .GIF, .WEBP
+                        </span>
+                    </label>
+
+                    <input
+                        type="file"
+                        id="archivosPublicacion"
+                        name="archivo"
+                        accept="image/jpeg,image/png,image/gif,image/webp" 
+                        hidden
+                    >
+                </div>
+            </div>
+
+            <div id="listaArchivos" class="lista-archivos"></div> 
+            <section class="seccion-vista-previa">
+                <h2><i class="fa-regular fa-eye"></i> Vista previa</h2>
+
+                <div class="tarjeta-vista-previa">
+                    <p id="textoVistaPrevia" class="texto-vista-previa">
+                        Tu publicación aparecerá aquí.
+                    </p>
+
+                    <div id="multimediaVistaPrevia"
+                         class="multimedia-vista-previa"></div>
+                </div>
+            </section>
+
+            <div class="acciones-publicacion">
+                <a href="feed.html" class="boton-cancelar">Cancelar</a>
+
+                <button type="submit" class="boton-publicar">
+                    <i class="fa-solid fa-paper-plane"></i> Publicar
+                </button>
+            </div>
+
+            <p id="mensajePublicacion"
+               class="mensaje-publicacion"
+               role="status"
+               aria-live="polite"
+               hidden></p>
+
+        </form>
+    </main>
+
+    <script src="../js/crear_publicacion.js"></script>
+</body>
+</html>
+ 
