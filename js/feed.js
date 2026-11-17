@@ -1,5 +1,3 @@
-const publicacionesIniciales = [];
-
 const sugerencias = [
   { nombre: 'Ana Castillo', iniciales: 'AC', profesion: 'Diseñadora', avatar: 'purple' },
   { nombre: 'Roberto Morales', iniciales: 'RM', profesion: 'Programador', avatar: 'orange' },
@@ -8,16 +6,8 @@ const sugerencias = [
 
 const postsContainer = document.querySelector('#postsContainer');
 const suggestionsContainer = document.querySelector('#suggestionsContainer');
-const modalElement = document.querySelector('#postModal');
-const postModal = new bootstrap.Modal(modalElement);
-const createPostForm = document.querySelector('#createPostForm');
-const postText = document.querySelector('#postText');
-const postFile = document.querySelector('#postFile');
-const fileName = document.querySelector('#fileName');
-const postFormMessage = document.querySelector('#postFormMessage');
 let publicaciones = [];
 let filtroActual = 'all';
-let siguienteId = 1;
 
 const escaparHTML = (valor = '') => String(valor).replace(/[&<>"']/g, caracter => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[caracter]);
 
@@ -43,7 +33,24 @@ const medio = post.tipo === 'text'
        </div>`;
 
   return `<article class="post-card" data-type="${escaparHTML(post.tipo)}" data-category="${escaparHTML(post.categoria)}" data-post-id="${post.id}">
-    <div class="post-header"><div class="post-user"><span class="post-avatar avatar-${escaparHTML(post.avatar)}">${escaparHTML(post.iniciales)}</span><div><strong>${escaparHTML(post.autor)}</strong><span>${escaparHTML(post.profesion)} · ${escaparHTML(post.tiempo)}</span></div></div><button class="post-menu" type="button" aria-label="Más opciones"><i class="bi bi-three-dots"></i></button></div>
+    <div class="post-header"><div class="post-user">
+        <span
+            class="post-avatar avatar-${escaparHTML(post.avatar)}"
+            style="position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: 
+        center;"
+        >
+            ${escaparHTML(post.iniciales)}
+
+            ${post.fotoPerfil ? `
+                <img
+                    src="${escaparHTML(post.fotoPerfil)}"
+                    alt="Foto de ${escaparHTML(post.autor)}"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                    onerror="this.remove()"
+                >
+            ` : ''}
+        </span>
+    <div><strong>${escaparHTML(post.autor)}</strong><span>${escaparHTML(post.profesion)} · ${escaparHTML(post.tiempo)}</span></div></div><button class="post-menu" type="button" aria-label="Más opciones"><i class="bi bi-three-dots"></i></button></div>
     <div class="post-content"><p>${escaparHTML(post.texto)}</p><div class="post-tags"><span>#${escaparHTML(post.etiqueta)}</span></div></div>
     ${medio ? `<div class="post-media ${post.tipo === 'video' ? 'video-media' : ''}">${medio}</div>` : ''} 
     <div class="post-actions"><button class="action-btn like-btn" type="button" aria-pressed="false"><i class="bi bi-heart"></i><span>${post.likes}</span></button><button class="action-btn comment-btn" type="button"><i class="bi bi-chat"></i><span>${post.comentarios.length}</span></button></div>
@@ -57,23 +64,37 @@ async function cargarPublicaciones() {
     '<p class="empty-state">Cargando publicaciones...</p>';
 
   try {
-    const respuesta = await fetch('../php/obtener_publicaciones.php');
+    const respuesta = await fetch('../php/obtener_feed.php', {
+        method: 'GET',
+        credentials: 'same-origin'
+    });
 
     if (!respuesta.ok) {
       throw new Error('Error al consultar las publicaciones.');
     }
 
     const datos = await respuesta.json();
+    console.log("DATOS RECIBIDOS DE PHP:", datos);
+    console.log("PRIMER ID DE USUARIO:", datos[0]?.id_usuario);
+    console.log("PRIMERA PUBLICACION:", datos[0]); 
 
     if (!Array.isArray(datos)) {
       throw new Error(
         datos.error || 'La respuesta del servidor no es válida.'
       );
     }
-
+    console.log("ENTRÉ A LA TRANSFORMACIÓN MAP"); 
     publicaciones = datos.map(post => {
+      console.log("ENTRÉ AL MAP:", post.id_publicacion);
+      console.log("ID USUARIO ORIGINAL:", post.id_usuario);
+      console.log("ID DEL AUTOR:", post.id_usuario);
       const nombre = post.nombre || 'Usuario';
       const partesNombre = nombre.trim().split(/\s+/);
+
+      console.log("ANTES DE CREAR OBJETO:", {
+          idUsuario: Number(post.id_usuario),
+          fotoPerfil: `../php/obtener_foto_perfil.php?id=${post.id_usuario}`
+      });
 
       const tipo = post.tipo_contenido === 'imagen'
         ? 'image'
@@ -103,13 +124,27 @@ async function cargarPublicaciones() {
        + encodeURIComponent(post.id_publicacion);
       }
 
+      console.log(
+          "URL DE FOTO:",
+          '../php/obtener_foto_perfil.php?id=' +
+          encodeURIComponent(post.id_usuario)
+      );
+      console.log("ESTOY CREANDO EL OBJETO:", post.id_publicacion, post.id_usuario); 
       return {
-        id: Number(post.id_publicacion),
-        autor: nombre,
-        iniciales: partesNombre
-          .slice(0, 2)
-          .map(palabra => palabra.charAt(0).toUpperCase())
-          .join(''),
+          id: Number(post.id_publicacion),
+
+          idUsuario: Number(post.id_usuario),
+
+          autor: nombre,
+
+          fotoPerfil: post.id_usuario
+              ? `../php/obtener_foto_perfil.php?id=${encodeURIComponent(post.id_usuario)}`
+              : null,
+
+          iniciales: partesNombre
+              .slice(0, 2)
+              .map(palabra => palabra.charAt(0).toUpperCase())
+              .join(''),
         profesion: 'Usuario de FreeLink',
         tiempo,
         texto: post.contenido || '',
@@ -118,7 +153,8 @@ async function cargarPublicaciones() {
           : post.tipo_contenido === 'video'
             ? 'Video'
             : 'Publicación',
-        categoria: 'all',
+        idCategoria: Number(post.id_categoria),
+        categoria: post.categoria || '',
         tipo,
         avatar: 'purple',
         media: post.nombre_archivo || 'Publicación de texto',
@@ -128,10 +164,9 @@ async function cargarPublicaciones() {
       };
     });
 
-    siguienteId = publicaciones.length
-      ? Math.max(...publicaciones.map(post => post.id)) + 1
-      : 1;
-
+    console.log("PRIMER OBJETO TRANSFORMADO:", publicaciones[0]);
+    console.log("ID USUARIO TRANSFORMADO:", publicaciones[0]?.idUsuario);
+    console.log("FOTO PERFIL TRANSFORMADA:", publicaciones[0]?.fotoPerfil);
     renderizarPublicaciones();
 
   } catch (error) {
@@ -143,23 +178,19 @@ async function cargarPublicaciones() {
 }
 
 function renderizarPublicaciones() {
-  const visibles = publicaciones.filter(post => filtroActual === 'all' || post.tipo === filtroActual || post.categoria === filtroActual);
-  postsContainer.innerHTML = visibles.length ? visibles.map(renderizarPublicacion).join('') : '<p class="empty-state">No hay publicaciones para este filtro.</p>';
-}
+
+    const visibles = publicaciones.filter(post =>
+        filtroActual === 'all' ||
+        post.idCategoria === Number(filtroActual)
+    );
+
+    postsContainer.innerHTML = visibles.length
+        ? visibles.map(renderizarPublicacion).join('')
+        : '<p class="empty-state">No hay publicaciones para este filtro.</p>';
+} 
 
 function renderizarSugerencias() {
   suggestionsContainer.innerHTML = sugerencias.map(persona => `<div class="suggestion"><span class="suggestion-avatar avatar-${persona.avatar}">${persona.iniciales}</span><div class="suggestion-info"><strong>${persona.nombre}</strong><span>${persona.profesion}</span></div><button type="button" class="follow-btn">Seguir</button></div>`).join('');
-}
-
-const openPostModalButton = document.querySelector('#openPostModal');
-
-if (openPostModalButton) {
-    openPostModalButton.addEventListener('click', () => {
-        createPostForm.reset();
-        fileName.textContent = '';
-        postFormMessage.textContent = '';
-        postModal.show();
-    });
 }
 
 document.querySelector('.filters').addEventListener('click', event => {
@@ -207,46 +238,8 @@ suggestionsContainer.addEventListener('click', event => {
   boton.textContent = siguiendo ? 'Siguiendo' : 'Seguir';
 });
 
-postFile.addEventListener('change', () => {
-  const archivo = postFile.files[0];
-  fileName.textContent = archivo ? `${archivo.name} (${Math.round(archivo.size / 1024)} KB)` : '';
-  postFormMessage.textContent = '';
-});
-
-document.querySelectorAll('input[name="postType"]').forEach(input => input.addEventListener('change', () => {
-  postFile.accept = input.value === 'video' ? 'video/*' : 'image/*';
-  postFile.value = '';
-  fileName.textContent = '';
-}));
-
-createPostForm.addEventListener('submit', event => {
-  event.preventDefault();
-  const texto = postText.value.trim();
-  const archivo = postFile.files[0];
-  const tipo = createPostForm.elements.postType.value;
-  if (!texto && !archivo) {
-    postFormMessage.textContent = 'Escribe algo o selecciona un archivo para publicar.';
-    return;
-  }
-  if (archivo && !(tipo === 'image' ? archivo.type.startsWith('image/') : archivo.type.startsWith('video/'))) {
-    postFormMessage.textContent = `Selecciona un archivo válido para ${tipo === 'image' ? 'imagen' : 'video'}.`;
-    return;
-  }
-  const categoria = document.querySelector('#postCategory').value;
-  const categorias = { design: 'Diseño', programming: 'Programación', photography: 'Fotografía', art: 'Arte', education: 'Educación', other: 'Otro' };
-  const url = post.tiene_multimedia && post.url_multimedia
-    ? post.url_multimedia
-    : ''; 
-  publicaciones.unshift({ id: siguienteId++, autor: 'Cesar García', iniciales: 'CG', profesion: 'Creador independiente', tiempo: 'Ahora', texto: texto || 'Comparto un nuevo proyecto.', etiqueta: categorias[categoria], categoria, tipo: archivo ? tipo : 'image', avatar: 'purple', media: archivo ? archivo.name : 'Publicación de texto', url, likes: 0, comentarios: [] });
-  filtroActual = 'all';
-  document.querySelectorAll('.filter-btn').forEach(boton => boton.classList.toggle('active', boton.dataset.filter === 'all'));
-  renderizarPublicaciones();
-  postModal.hide();
-  createPostForm.reset();
-  fileName.textContent = '';
-});
-
 console.log("FEED.JS ACTUALIZADO");
+console.log("PRUEBA DE ARCHIVO NUEVO 12345");
 
 renderizarSugerencias();
 

@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // Elementos del formulario
     const loginForm = document.getElementById('loginForm');
     const correo = document.getElementById('correo');
     const password = document.getElementById('password');
@@ -6,9 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginMessage = document.getElementById('loginMessage');
     const forgotPassword = document.getElementById('forgotPassword');
 
+    const loginBtn = document.getElementById('loginBtn');
+    const loginBtnText = document.getElementById('loginBtnText');
+    const loginSpinner = document.getElementById('loginSpinner');
+
+    // Comprobar que estamos en la página de inicio de sesión.
     if (!loginForm || !correo || !password) return;
 
-    // Obtener los mensajes de error de cada campo.
+    // Mensajes de error de los campos.
     const correoError = correo
         .closest('.mb-4')
         .querySelector('.invalid-feedback');
@@ -17,8 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .closest('.mb-3')
         .querySelector('.invalid-feedback');
 
-    // Mostrar u ocultar un mensaje de error.
+    // Mostrar error en un campo.
     function mostrarError(input, mensaje, texto) {
+
         input.classList.add('is-invalid');
         input.classList.remove('is-valid');
 
@@ -26,8 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
         mensaje.style.display = 'block';
     }
 
-    // Limpiar el error de un campo.
+    // Limpiar error de un campo.
     function limpiarError(input, mensaje) {
+
         input.classList.remove('is-invalid');
         input.classList.remove('is-valid');
 
@@ -35,18 +44,28 @@ document.addEventListener('DOMContentLoaded', () => {
         mensaje.textContent = '';
     }
 
-    // Validar el formato del correo.
+    // Mostrar mensaje general.
+    function mostrarMensaje(texto, tipo = 'danger') {
+
+        loginMessage.className = `alert alert-${tipo}`;
+        loginMessage.textContent = texto;
+    }
+
+    // Validar correo electrónico.
     function validarCorreo() {
+
         const valor = correo.value.trim();
 
-        const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
 
         if (!valor || !correoRegex.test(valor)) {
+
             mostrarError(
                 correo,
                 correoError,
                 'Ingresa un correo electrónico válido.'
             );
+
             return false;
         }
 
@@ -56,50 +75,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // Validar los requisitos de la contraseña.
+    // En el login solamente verificamos que no esté vacío.
+    // La contraseña real se comprueba en PHP con password_verify().
     function validarPassword() {
+
         const valor = password.value;
 
-        const tieneLongitud = valor.length >= 8;
-        const tieneMayuscula = /[A-Z]/.test(valor);
-        const tieneNumero = /\d/.test(valor);
-        const tieneEspecial = /[^A-Za-z0-9\s]/.test(valor);
-
         if (!valor) {
+
             mostrarError(
                 password,
                 passwordError,
                 'Ingresa tu contraseña.'
             );
-            return false;
-        }
 
-        const requisitos = [];
-
-        if (!tieneLongitud) {
-            requisitos.push('al menos 8 caracteres');
-        }
-
-        if (!tieneMayuscula) {
-            requisitos.push('una letra mayúscula');
-        }
-
-        if (!tieneNumero) {
-            requisitos.push('un número');
-        }
-
-        if (!tieneEspecial) {
-            requisitos.push('un carácter especial');
-        }
-
-        if (requisitos.length > 0) {
-            mostrarError(
-                password,
-                passwordError,
-                'La contraseña debe contener ' +
-                requisitos.join(', ') +
-                '.'
-            );
             return false;
         }
 
@@ -109,8 +98,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // Validar al escribir o al salir del campo.
+    // Validar correo al escribir.
     correo.addEventListener('input', () => {
+
         if (correo.classList.contains('is-invalid')) {
             validarCorreo();
         }
@@ -120,7 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     correo.addEventListener('blur', validarCorreo);
 
+    // Validar contraseña al escribir.
     password.addEventListener('input', () => {
+
         if (password.classList.contains('is-invalid')) {
             validarPassword();
         }
@@ -130,9 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     password.addEventListener('blur', validarPassword);
 
-    // Mostrar u ocultar la contraseña.
+    // Mostrar u ocultar contraseña.
     if (togglePassword) {
+
         togglePassword.addEventListener('click', () => {
+
             const mostrar = password.type === 'password';
 
             password.type = mostrar ? 'text' : 'password';
@@ -145,11 +139,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 'aria-label',
                 mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña'
             );
+
         });
+
     }
 
-    // Validar el formulario antes de procesarlo.
-    loginForm.addEventListener('submit', (event) => {
+    // Estado visual del botón.
+    function cambiarEstadoBoton(cargando) {
+
+        if (!loginBtn) return;
+
+        loginBtn.disabled = cargando;
+
+        if (loginBtnText) {
+            loginBtnText.textContent = cargando
+                ? 'Iniciando sesión...'
+                : 'Iniciar sesión';
+        }
+
+        if (loginSpinner) {
+            loginSpinner.classList.toggle('d-none', !cargando);
+        }
+    }
+
+    // Enviar credenciales al servidor.
+    loginForm.addEventListener('submit', async (event) => {
+
         event.preventDefault();
 
         loginMessage.className = 'alert d-none';
@@ -159,11 +174,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const passwordValida = validarPassword();
 
         if (!correoValido || !passwordValida) {
-            loginMessage.className = 'alert alert-danger';
-            loginMessage.textContent =
-                'Por favor, corrige los errores antes de continuar.';
 
-            const primerCampoInvalido = loginForm.querySelector('.is-invalid');
+            mostrarMensaje(
+                'Por favor, corrige los errores antes de continuar.'
+            );
+
+            const primerCampoInvalido =
+                loginForm.querySelector('.is-invalid');
 
             if (primerCampoInvalido) {
                 primerCampoInvalido.focus();
@@ -172,22 +189,69 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // El login todavía no está conectado a un servidor.
-        loginMessage.className = 'alert alert-info';
-        loginMessage.textContent =
-            'El formato de los datos es válido. ' +
-            'Para iniciar sesión, falta conectar el formulario ' +
-            'con el servidor y verificar tus credenciales.';
+        cambiarEstadoBoton(true);
+
+        try {
+
+            const datos = new FormData(loginForm);
+
+            const respuesta = await fetch('../php/login.php', {
+                method: 'POST',
+                body: datos
+            });
+
+            const resultado = await respuesta.json();
+
+            if (!respuesta.ok || !resultado.success) {
+
+                mostrarMensaje(
+                    resultado.message ||
+                    'No fue posible iniciar sesión.'
+                );
+
+                return;
+            }
+
+            mostrarMensaje(
+                resultado.message,
+                'success'
+            );
+
+            // Redirigir al feed después de autenticar.
+            window.location.href =
+                resultado.redirect || 'feed.html';
+
+        } catch (error) {
+
+            console.error('Error al iniciar sesión:', error);
+
+            mostrarMensaje(
+                'No fue posible comunicarse con el servidor.'
+            );
+
+        } finally {
+
+            cambiarEstadoBoton(false);
+
+        }
+
     });
 
-    // Aviso para la opción de recuperar contraseña.
+    // Recuperación de contraseña.
     if (forgotPassword) {
+
         forgotPassword.addEventListener('click', (event) => {
+
             event.preventDefault();
 
-            loginMessage.className = 'alert alert-info';
-            loginMessage.textContent =
-                'La recuperación de contraseña todavía no está implementada.';
+            mostrarMensaje(
+                'La recuperación de contraseña todavía no está implementada.',
+                'info'
+            );
+
         });
+
     }
+
 });
+ 

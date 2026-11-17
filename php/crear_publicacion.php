@@ -24,6 +24,12 @@ function regresarConError($mensaje) {
     </html>';
     exit;
 }
+// Verificar que el usuario haya iniciado sesión.
+if (!isset($_SESSION["user_id"]) || (int) $_SESSION["user_id"] <= 0) {
+    regresarConError("Debes iniciar sesión para crear una publicación.");
+}
+// Obtener el ID del usuario que inició sesión.
+$idUsuario = (int) $_SESSION["user_id"];
 
 $tipo = $_POST["tipo_contenido"] ?? "";
 $contenido = trim($_POST["contenido"] ?? "");
@@ -129,22 +135,9 @@ if ($hayArchivo) {
 
 try {
     $conexion->begin_transaction();
-
-    // usamos el primer usuario ya que aún no conectamos con le login
-    $resultadoUsuario = $conexion->query(
-        "SELECT id_usuario FROM USUARIOS ORDER BY id_usuario ASC LIMIT 1"
-    );
-    $usuarioFila = $resultadoUsuario->fetch_assoc();
-
-    if (!$usuarioFila) {
-        $conexion->rollback();
-        regresarConError("Primero debes registrar al menos un usuario en FreeLink.");
-    }
-
-    $idUsuario = (int) $usuarioFila["id_usuario"];
-
-   $stmtCategoria = $conexion->prepare(
-    "SELECT id_categoria FROM CATEGORIAS WHERE id_categoria = ?"
+    // Validamos que la categoria seleccionada exista
+    $stmtCategoria = $conexion->prepare(
+     "SELECT id_categoria FROM CATEGORIAS WHERE id_categoria = ?"
 );
 
 $stmtCategoria->bind_param("i", $idCategoria);

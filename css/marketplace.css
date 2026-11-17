@@ -3,42 +3,6 @@
     color: #242238;
 }
 
-/*encabezado*/
-.marketplace-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    padding: 16px 7%;
-
-    background: #ffffffee;
-    backdrop-filter: blur(10px);
-
-    border-bottom: 1px solid #e8e4f2;
-}
-
-.marketplace-header nav {
-    display: flex;
-    gap: 22px;
-}
-
-.marketplace-header nav a {
-    color: #77728b;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.marketplace-header nav a:hover,
-.marketplace-header nav a.active {
-    color: #6c49d8;
-}
-
 .marketplace-actions {
     display: flex;
     align-items: center;
@@ -1154,54 +1118,6 @@
     color: #77728b;
 }
 
-.freelink-footer { /*pie de pagina*/
-    padding: 30px 7%;
-
-    background: #211a35;
-
-    color: white;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    gap: 30px;
-}
-
-.footer-logo {
-    font-size: 28px;
-}
-
-.footer-logo span {
-    color: #6c49d8;
-}
-
-.freelink-footer p {
-    margin: 5px 0 0;
-
-    color: #c7c1d5;
-}
-
-.footer-links {
-    display: flex;
-
-    align-items: center;
-
-    flex-wrap: wrap;
-
-    gap: 20px;
-}
-
-.footer-links a {
-    color: #c7c1d5;
-
-    font-size: 13px;
-}
-
-.footer-links a:hover {
-    color: white;
-}
-
 @media (max-width: 1050px) { /*responsiva*/
 
     .categories-grid {
@@ -1217,11 +1133,6 @@
 }
 
 @media (max-width: 850px) {
-
-    .marketplace-header nav {
-        display: none;
-    }
-
     .marketplace-hero {
         grid-template-columns: 1fr;
     }
@@ -1308,9 +1219,5 @@
         flex: 1;
 
         min-width: 0;
-    }
-
-    .freelink-footer {
-        flex-direction: column;
     }
 }

@@ -1,0 +1,19 @@
+# Archivos de configuracion con credenciales
+.env
+.env.*
+!.env.example
+
+# Respaldos de MySQL
+Dump*/
+*.sql.zip
+*.sql.gz
+
+# Archivos temporales
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Dependencias locales
+vendor/
+node_modules/
