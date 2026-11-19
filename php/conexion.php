@@ -3,7 +3,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $host = "localhost";
 $usuario = "root";
-$password = "cesar";
+$password = "root";
 $base_datos = "freelink_db";
 
 try {

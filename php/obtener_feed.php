@@ -18,32 +18,9 @@ if (!isset($_SESSION['user_id'])) {
 try {
 
     // Consultar las publicaciones de todos los usuarios.
-    $sql = "SELECT
-                p.id_publicacion,
-                p.id_usuario,
-                u.nombre,
-                p.id_categoria,
-                c.nombre AS categoria,
-                p.tipo_contenido,
-                p.contenido,
-                p.nombre_archivo,
-                p.mime_type,
-                p.fecha_publicacion,
-                CASE
-                    WHEN p.multimedia IS NOT NULL
-                         AND OCTET_LENGTH(p.multimedia) > 0
-                    THEN 1
-                    ELSE 0
-                END AS tiene_multimedia
-            FROM PUBLICACIONES p
-            INNER JOIN USUARIOS u
-                ON u.id_usuario = p.id_usuario
-            INNER JOIN CATEGORIAS c
-                ON c.id_categoria = p.id_categoria
-            WHERE p.estado = 'activo'
-            ORDER BY p.fecha_publicacion DESC";
-
-    $stmt = $conexion->prepare($sql);
+    $stmt = $conexion->prepare("CALL sp_listar_feed(?)");
+    $idUsuarioActual = (int) $_SESSION['user_id'];
+    $stmt->bind_param("i", $idUsuarioActual);
     $stmt->execute();
 
     $resultado = $stmt->get_result();

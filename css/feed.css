@@ -148,3 +148,10 @@
 }
 
 
+
+/* Valoración persistente de publicaciones */
+.rating-row {display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid #eee;font-size:.9rem;}
+.rating-stars {display:inline-flex;gap:5px;}
+.rating-star {background:transparent;border:0;color:#e2a500;font-size:1.3rem;cursor:pointer;padding:4px;}
+.rating-star:hover,.rating-star:focus-visible {color:#f6b800;transform:scale(1.12);}
+.rating-star:disabled {opacity:.5;cursor:wait;}
