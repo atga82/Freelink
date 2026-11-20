@@ -4,64 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Perfil profesional | FreeLink</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
-    <!--bootstrap icons-->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    >
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" >
     <link rel="stylesheet" href="../css/styles.css">
-
     <link rel="stylesheet" href="../css/perfil.css">
+    <link rel="stylesheet" href="../css/componentes.css"> 
 </head>
 
 <body class="profile-page">
 
-    <header class="profile-header"> <!--barra de navegacion   ilustración digital-->
-
-        <a href="../index.html" class="logo">
-            Free<span>Link</span>
-        </a>
-
-        <nav>
-            <a href="../index.html">Inicio</a>
-            <a href="feed.html">Explorar</a>
-            <a href="marketplace.html">Marketplace</a>
-            <a href="mensajes.html">Mensajes</a>
-            <a href="perfil.html" class="active">Mi perfil</a>
-        </nav>
-
-        <div class="profile-header-actions">
- <!--
-            <button
-                class="notification-btn"
-                type="button"
-                title="Notificaciones"
-            >
-                <i class="bi bi-bell"></i>
-                <span class="notification-dot"></span>
-            </button>
- -->
-            <button
-                class="edit-profile-top"
-                id="editProfileTop"
-                type="button"
-            >
-                <i class="bi bi-pencil"></i>
-                Editar perfil
-            </button>
-
-        </div>
-
-    </header>
+    <div id="navbar-container"></div>
 
     <main class="profile-container"> <!--perfil-->
 
@@ -86,20 +39,27 @@
 
                 <div class="profile-photo-wrapper">
 
-                    <div class="profile-photo">
-                        CG
-                    </div>
-
-                    <button
-                        class="photo-edit"
-                        id="editPhoto"
-                        type="button"
-                        title="Cambiar foto"
-                    >
-                        <i class="bi bi-camera-fill"></i>
-                    </button>
-
+                    <div class="profile-photo" id="profilePhoto">
+                        U
                 </div>
+
+                <button
+                    class="photo-edit"
+                    id="editPhoto"
+                    type="button"
+                    title="Cambiar foto"
+                >
+                    <i class="bi bi-camera-fill"></i>
+                </button>
+
+                <input
+                    type="file"
+                    id="profilePhotoInput"
+                    accept="image/jpeg,image/png,image/webp"
+                    hidden
+                >
+
+            </div>
 
 
                 <div class="profile-info">
@@ -109,70 +69,35 @@
                         <div>
 
                             <h1>
-                                Cesar García
+                                <span id="profileDisplayName">Cargando perfil...</span>
+
                                 <i
                                     class="bi bi-patch-check-fill verified-icon"
                                     title="Perfil verificado"
                                 ></i>
                             </h1>
 
-                            <p class="profile-profession">
-                                Diseñador 3D · Artista digital · Creador independiente
+                            <p class="profile-profession" id="profileUserType">
+                               Cargando tipo de usuario...
                             </p>
 
                         </div>
-
-                        <div class="profile-actions">
-
-                            <button
-                                class="follow-btn"
-                                id="followBtn"
-                                type="button"
-                            >
-                                <i class="bi bi-person-plus"></i>
-                                Seguir
-                            </button>
-
-                            <button
-                                class="message-profile-btn"
-                                id="messageProfileBtn"
-                                type="button"
-                            >
-                                <i class="bi bi-chat"></i>
-                                Mensaje
-                            </button>
-
-                        </div>
-
                     </div>
-
 
                     <div class="profile-location">
                         <span>
-                            <i class="bi bi-geo-alt"></i>
-                            México
+                            <i class="bi bi-envelope"></i>
+                            <span id="profileEmail">Cargando correo...</span>
                         </span>
-
                     </div>
 
                     <div class="profile-stats">
 
                         <div>
                             <strong id="projectCount">24</strong>
-                            <span>Proyectos</span>
+                            <span>Publicaciones</span> 
                         </div>
 
-                        <div>
-                            <strong id="followerCount">1.8K</strong>
-                            <span>Seguidores</span>
-                        </div>
-
-                        <div>
-                            <strong>342</strong>
-                            <span>Siguiendo</span>
-                        </div>
-
-                        
                          <div> 
                              <strong>4.9</strong>
                             <span>Reputación</span>
@@ -193,8 +118,8 @@
                 data-section="portfolioSection"
                 type="button"
             >
-                <i class="bi bi-grid-3x3-gap"></i>
-                Portafolio
+            <i class="bi bi-grid-3x3-gap"></i>
+            Publicaciones
             </button>
 
             <button
@@ -240,6 +165,7 @@
             <div class="profile-content"> <!--columna principal-->
 
                 <!--portafolio-->
+                <!-- publicaciones del usuario -->
                 <section
                     class="profile-section active-section"
                     id="portfolioSection"
@@ -248,272 +174,37 @@
                     <div class="section-heading">
 
                         <div>
-                            <small>MI TRABAJO</small>
+                            <small>MI ACTIVIDAD</small>
 
-                            <h2>
-                                Portafolio
-                            </h2>
+                            <h2>Mis publicaciones</h2>
 
                             <p>
-                                Una selección de proyectos y trabajos
-                                realizados por este creador.
+                                Publicaciones que has compartido con la comunidad de FreeLink.
                             </p>
-                        </div>
-
-                        <button
-                            class="add-project-btn"
-                            id="addProjectBtn"
-                            type="button"
-                        >
-                            <i class="bi bi-plus-lg"></i>
-                            Agregar proyecto
-                        </button>
-
                     </div>
 
-                    <div class="portfolio-filters"> <!--filtros del portafolio -->
-
-                        <button
-                            class="portfolio-filter active"
-                            data-portfolio-filter="all"
-                            type="button"
-                        >
-                            Todo
-                        </button>
-
-                        <button
-                            class="portfolio-filter"
-                            data-portfolio-filter="3d"
-                            type="button"
-                        >
-                            Modelos 3D
-                        </button>
-
-                        <button
-                            class="portfolio-filter"
-                            data-portfolio-filter="illustration"
-                            type="button"
-                        >
-                            Ilustraciónes
-                        </button>
-
-                    </div>
-
-                    <!--proyectos-->
-                    <div
-                        class="portfolio-grid"
-                        id="portfolioGrid"
+                    <a
+                        href="crear_publicacion.html"
+                        class="add-project-btn"
                     >
+                        <i class="bi bi-plus-lg"></i>
+                        Crear publicación
+                    </a>
 
-                        <!--proyecto 1-->
-                        <article
-                            class="portfolio-item"
-                            data-category="3d"
-                        >
+            </div>
 
-                            <div class="portfolio-image portfolio-purple">
+            <div
+                class="publicaciones-grid"
+                id="publicacionesPerfil"
+            >
 
-                                <i class="bi bi-box"></i>
+                <div class="publicaciones-mensaje">
+                    Cargando tus publicaciones...
+                </div>
 
-                                <span>
-                                    Personaje 3D
-                                </span>
+            </div>
 
-                            </div>
-
-                            <div class="portfolio-info">
-
-                                <div>
-                                    <small>MODELADO 3D</small>
-
-                                    <h3>
-                                        Personaje fantástico
-                                    </h3>
-                                </div>
-
-                                <button
-                                    class="project-view-btn"
-                                    type="button"
-                                    title="Ver proyecto"
-                                >
-                                    <i class="bi bi-arrow-up-right"></i>
-                                </button>
-
-                            </div>
-
-                        </article>
-
-                        <!--proyecto 2-->
-                        <article
-                            class="portfolio-item"
-                            data-category="design"
-                        >
-
-                            <div class="portfolio-image portfolio-orange">
-
-                                <i class="bi bi-brush"></i>
-
-                                <span>
-                                    Identidad visual
-                                </span>
-
-                            </div>
-
-                            <div class="portfolio-info">
-
-                                <div>
-                                    <small>DISEÑO</small>
-
-                                    <h3>
-                                        Marca para creador
-                                    </h3>
-                                </div>
-
-                                <button
-                                    class="project-view-btn"
-                                    type="button"
-                                >
-                                    <i class="bi bi-arrow-up-right"></i>
-                                </button>
-
-                            </div>
-
-                        </article>
-
-                        <!--proyecto 3-->
-                        <article
-                            class="portfolio-item"
-                            data-category="illustration"
-                        >
-
-                            <div class="portfolio-image portfolio-green">
-
-                                <i class="bi bi-palette"></i>
-
-                            </div>
-
-                            <div class="portfolio-info">
-
-                                <div>
-                                    <small>ILUSTRACIÓN</small>
-
-                                    <h3>
-                                        Concept art
-                                    </h3>
-                                </div>
-
-                                <button
-                                    class="project-view-btn"
-                                    type="button"
-                                >
-                                    <i class="bi bi-arrow-up-right"></i>
-                                </button>
-
-                            </div>
-
-                        </article>
-
-                        <!--proyecto 4-->
-                        <article
-                            class="portfolio-item"
-                            data-category="animation"
-                        >
-
-                            <div class="portfolio-image portfolio-pink">
-
-                                <div class="portfolio-play">
-                                    <i class="bi bi-play-fill"></i>
-                                </div>
-
-                            </div>
-
-                            <div class="portfolio-info">
-
-                                <div>
-                                    <small>ANIMACIÓN</small>
-
-                                    <h3>
-                                        Proyecto audiovisual
-                                    </h3>
-                                </div>
-
-                                <button
-                                    class="project-view-btn"
-                                    type="button"
-                                >
-                                    <i class="bi bi-arrow-up-right"></i>
-                                </button>
-
-                            </div>
-
-                        </article>
-
-                        <!--proyecto 5-->
-                        <article
-                            class="portfolio-item"
-                            data-category="3d"
-                        >
-
-                            <div class="portfolio-image portfolio-blue">
-
-                            </div>
-
-                            <div class="portfolio-info">
-
-                                <div>
-                                    <small>MODELADO 3D</small>
-
-                                    <h3>
-                                        Escenario medieval
-                                    </h3>
-                                </div>
-
-                                <button
-                                    class="project-view-btn"
-                                    type="button"
-                                >
-                                    <i class="bi bi-arrow-up-right"></i>
-                                </button>
-
-                            </div>
-
-                        </article>
-
-                        <!--proyecto 6-->
-                        <article
-                            class="portfolio-item"
-                            data-category="design"
-                        >
-
-                            <div class="portfolio-image portfolio-dark">
-
-                            </div>
-
-                            <div class="portfolio-info">
-
-                                <div>
-                                    <small>DISEÑO</small>
-
-                                    <h3>
-                                        Proyecto FreeLink
-                                    </h3>
-                                </div>
-
-                                <button
-                                    class="project-view-btn"
-                                    type="button"
-                                >
-                                    <i class="bi bi-arrow-up-right"></i>
-                                </button>
-
-                            </div>
-
-                        </article>
-
-                    </div>
-
-                </section>
-
+        </section>
                 <!--sobre el creador-->
                 <section
                     class="profile-section"
@@ -541,75 +232,21 @@
                     </div>
 
                     <div class="about-card">
+                        <h3>Sobre mí</h3>
 
-                        <h3>
-                            Diseñador y creador independiente
-                        </h3>
-
-                        <p>
-                            Soy un creador enfocado en diseño 3D,
-                            arte digital y desarrollo de proyectos
-                            creativos. Me interesa transformar ideas
-                            en experiencias visuales y trabajar con
-                            personas que tengan proyectos interesantes.
+                        <p id="profileBiography">
+                            Cargando biografía...
                         </p>
-
-                        <p>
-                            En FreeLink comparto mis proyectos,
-                            ofrezco servicios profesionales y
-                            construyo conexiones con otros creadores
-                            y clientes.
-                        </p>
-
                     </div>
-
 
                     <div class="skills-card">
 
                         <h3>
-                            Habilidades
+                            Áreas de interés
                         </h3>
 
-                        <div class="skills-list">
-
-                            <span>Modelado 3D</span>
-                            <span>Ilustración</span>
-                            <span>Diseño de personajes</span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="experience-card">
-
-                        <h3>
-                            Experiencia
-                        </h3>
-
-                        <div class="experience-item">
-
-                            <div class="experience-icon">
-                                <i class="bi bi-briefcase"></i>
-                            </div>
-
-                            <div>
-
-                                <strong>
-                                    Creador independiente
-                                </strong>
-
-                                <span>
-                                    2024 — Actualmente
-                                </span>
-
-                                <p>
-                                    Desarrollo de proyectos
-                                    audiovisuales, diseño 3D e
-                                    ilustración digital.
-                                </p>
-
-                            </div>
-
+                        <div class="skills-list" id="profileInterests">
+                            <span>Cargando áreas de interés...</span>
                         </div>
 
                     </div>
@@ -1048,73 +685,11 @@
 
             <aside class="profile-sidebar"> <!--barra lateral-->
 
-                <div class="sidebar-card availability-card"> <!--disponibilidad-->
+                <div class="sidebar-card freelancers-activos">
 
                     <div class="availability-status">
                         <span></span>
                         Freelancer Activo
-                    </div>
-
-                </div>
-
-                <div class="sidebar-card"> <!--especialidades -->
-
-                    <div class="sidebar-heading">
-                        <strong>Especialista en </strong>
-                        <i class="bi bi-stars"></i>
-                    </div>
-
-                    <div class="specialties">
-
-                        <span>
-                            Modelado 3D
-                        </span>
-
-                        <span>
-                            Arte digital
-                        </span>
-
-                    </div>
-
-                </div>
-
-                <div class="sidebar-card"> <!--estadisticas-->
-
-                    <div class="sidebar-heading">
-                        <strong>Actividad profesional</strong>
-                    </div>
-
-                    <div class="professional-stat">
-
-                        <i class="bi bi-briefcase"></i>
-
-                        <div>
-                            <strong>24</strong>
-                            <span>proyectos completados</span>
-                        </div>
-
-                    </div>
-
-                    <div class="professional-stat">
-
-                        <i class="bi bi-clock"></i>
-
-                        <div>
-                            <strong>98%</strong>
-                            <span>entregas a tiempo</span>
-                        </div>
-
-                    </div>
-
-                    <div class="professional-stat">
-
-                        <i class="bi bi-chat-dots"></i>
-
-                        <div>
-                            <strong>1 h</strong>
-                            <span>tiempo de respuesta</span>
-                        </div>
-
                     </div>
 
                 </div>
@@ -1130,6 +705,7 @@
         class="modal fade"
         id="editProfileModal"
         tabindex="-1"
+        aria-labelledby="editProfileModalLabel" 
         aria-hidden="true"
     >
 
@@ -1139,7 +715,7 @@
 
                 <div class="modal-header">
 
-                    <h5 class="modal-title">
+                    <h5 class="modal-title" id="editProfileModalLabel">
                         Editar perfil profesional
                     </h5>
 
@@ -1164,27 +740,11 @@
                             <input
                                 type="text"
                                 id="profileName"
-                                value="Cesar García"
+                                maxlength="100"
                                 required
                             >
 
                         </div>
-
-                        <div class="form-group-profile">
-
-                            <label for="profileProfession">
-                                Profesión
-                            </label>
-
-                            <input
-                                type="text"
-                                id="profileProfession"
-                                value="Diseñador 3D · Artista digital"
-                                required
-                            >
-
-                        </div>
-
 
                         <div class="form-group-profile">
 
@@ -1195,27 +755,12 @@
                             <textarea
                                 id="profileBio"
                                 rows="4"
-                            >Soy un creador enfocado en diseño 3D, arte digital y proyectos creativos.</textarea>
-
-                        </div>
-
-
-                        <div class="form-group-profile">
-
-                            <label for="profileLocation">
-                                Ubicación
-                            </label>
-
-                            <input
-                                type="text"
-                                id="profileLocation"
-                                value="México"
-                            >
+                                maxlength="2000"
+                            ></textarea>
 
                         </div>
 
                     </div>
-
 
                     <div class="modal-footer">
 
@@ -1245,36 +790,12 @@
 
     </div>
 
-    <!--pie de pagina-->
-    <footer class="freelink-footer">
-
-        <div>
-
-            <b class="footer-logo">
-                Free<span>Link</span>
-            </b>
-
-            <p>
-                Mostrar. Conectar. Vender. Crecer.
-            </p>
-
-        </div>
-
-        <div class="col-md-6 text-md-end">
-
-                    <small>
-                        </br>
-                        2026 FreeLink. Todos los derechos reservados.
-                    </small>
-
-        </div>
-
-    </footer>
-
+    <div id="footer-container"></div> 
+    
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     ></script>
-
+    <script src="../js/componentes.js"></script>  
     <script src="../js/perfil.js"></script>
 
 </body>

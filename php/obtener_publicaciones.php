@@ -4,11 +4,11 @@ header("Content-Type: application/json; charset=utf-8");
 require_once __DIR__ . "/sesion.php";
 require_once __DIR__ . "/conexion.php";
 
-// Comprobamos que el usuario inicio sesion.
+// Comprobar que el usuario inicio sesion.
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode([
-        "error" => "Debes iniciar sesión para consultar las publicaciones."
+        "error" => "Debes iniciar sesion para consultar las publicaciones."
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }

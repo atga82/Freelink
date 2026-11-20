@@ -52,7 +52,7 @@ function iniciarPerfil() {
             .join('') || 'U';
     }
 
-    // Mostramos mensajes dentro del contenedor de publicaciones.
+    // Mostrar mensajes dentro del contenedor de publicaciones.
     function mostrarMensajePublicaciones(mensaje) {
 
         if (!contenedorPublicaciones) {
@@ -67,7 +67,7 @@ function iniciarPerfil() {
         contenedorPublicaciones.replaceChildren(elemento);
     }
 
-    // Creamos una publicación en el perfil.
+    // Crear una publicación en el perfil.
     function crearTarjetaPublicacion(publicacion) {
 
         const tarjeta = document.createElement('article');
@@ -87,99 +87,70 @@ function iniciarPerfil() {
             contenido.appendChild(texto);
         }
 
-        
-    // NUEVO: mostrar las imágenes almacenadas en PUBLICACION_MULTIMEDIA.
-    const imagenes = Array.isArray(publicacion.multimedia_imagenes)
-        ? publicacion.multimedia_imagenes
-        : [];
+        // Imagen o video almacenado en MySQL.
+        if (
+            publicacion.tiene_multimedia &&
+            publicacion.url_multimedia
+        ) {
 
-    if (imagenes.length > 0) {
+            const mimeType = (
+                publicacion.mime_type || ''
+            ).toLowerCase();
 
-        imagenes.forEach((archivo, indice) => {
+            if (mimeType.startsWith('image/')) {
 
-            const imagen = document.createElement('img');
+                const imagen = document.createElement('img');
 
-            imagen.className = 'publicacion-perfil-media';
-            imagen.src = archivo.url;
-            imagen.alt = `Imagen ${indice + 1} de la publicación`;
-            imagen.loading = 'lazy';
+                imagen.className = 'publicacion-perfil-media';
+                imagen.src = publicacion.url_multimedia;
+                imagen.alt = 'Imagen de la publicación';
+                imagen.loading = 'lazy';
 
-            imagen.onerror = () => {
-                imagen.replaceWith(
+                imagen.onerror = () => {
+                    imagen.replaceWith(
+                        document.createTextNode(
+                            'No se pudo cargar la imagen.'
+                        )
+                    );
+                };
+
+                contenido.appendChild(imagen);
+
+            } else if (mimeType.startsWith('video/')) {
+
+                const video = document.createElement('video');
+
+                video.className = 'publicacion-perfil-video';
+                video.controls = true;
+                video.preload = 'metadata';
+
+                const fuente = document.createElement('source');
+
+                fuente.src = publicacion.url_multimedia;
+                fuente.type = mimeType;
+
+                video.appendChild(fuente);
+
+                video.appendChild(
                     document.createTextNode(
-                        'No se pudo cargar esta imagen.'
+                        'Tu navegador no puede reproducir este video.'
                     )
                 );
-            };
 
-            contenido.appendChild(imagen);
-        });
+                contenido.appendChild(video);
 
-    // imagenes antiguas y videos guardados en PUBLICACIONES.
-    } else if (
-        publicacion.tiene_multimedia &&
-        publicacion.url_multimedia
-    ) {
+            } else {
 
-        const mimeType = (
-            publicacion.mime_type || ''
-        ).toLowerCase();
+                const aviso = document.createElement('p');
 
-        if (mimeType.startsWith('image/')) {
+                aviso.textContent =
+                    'Esta publicación contiene un archivo multimedia no compatible.';
 
-            const imagen = document.createElement('img');
-
-            imagen.className = 'publicacion-perfil-media';
-            imagen.src = publicacion.url_multimedia;
-            imagen.alt = 'Imagen de la publicación';
-            imagen.loading = 'lazy';
-
-            imagen.onerror = () => {
-                imagen.replaceWith(
-                    document.createTextNode(
-                        'No se pudo cargar la imagen.'
-                    )
-                );
-            };
-
-            contenido.appendChild(imagen);
-
-        } else if (mimeType.startsWith('video/')) {
-
-            const video = document.createElement('video');
-
-            video.className = 'publicacion-perfil-video';
-            video.controls = true;
-            video.preload = 'metadata';
-
-            const fuente = document.createElement('source');
-
-            fuente.src = publicacion.url_multimedia;
-            fuente.type = mimeType;
-
-            video.appendChild(fuente);
-
-            video.appendChild(
-                document.createTextNode(
-                    'Tu navegador no puede reproducir este video.'
-                )
-            );
-
-            contenido.appendChild(video);
-
-        } else {
-
-            const aviso = document.createElement('p');
-
-            aviso.textContent =
-                'Esta publicación contiene un archivo multimedia no compatible.';
-
-            contenido.appendChild(aviso);
+                contenido.appendChild(aviso);
+            }
         }
-    }
 
-
-        // Fecha de publicacion.
+        // Fecha de publicación.
         const fecha = document.createElement('small');
 
         fecha.className = 'publicacion-perfil-fecha';
@@ -209,7 +180,7 @@ function iniciarPerfil() {
         return tarjeta;
     }
 
-    // Consultamos las publicaciones del usuario autenticado.
+    // Consultar las publicaciones del usuario autenticado.
     async function cargarPublicacionesUsuario() {
 
         if (!contenedorPublicaciones) {
@@ -262,7 +233,7 @@ function iniciarPerfil() {
 
             contenedorPublicaciones.replaceChildren();
 
-            // El usuario todavia no tiene publicaciones.
+            // El usuario todavía no tiene publicaciones.
             if (publicaciones.length === 0) {
 
                 mostrarMensajePublicaciones(
@@ -272,7 +243,7 @@ function iniciarPerfil() {
                 return;
             }
 
-            // Mostramos publicaciones más recientes primero.
+            // Mostrar publicaciones más recientes primero.
             publicaciones.forEach(publicacion => {
 
                 const tarjeta =
@@ -756,7 +727,7 @@ function iniciarPerfil() {
         );
     }
 
-    // Iniciamos cargas independientes
+    // Iniciar cargas independientes.
     cargarPerfilUsuario();
     cargarPublicacionesUsuario();
 }

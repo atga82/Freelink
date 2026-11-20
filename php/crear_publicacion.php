@@ -2,16 +2,13 @@
 session_start();
 require_once __DIR__ . "/conexion.php";
 
-// Comprobamos que la solicitud sea POST.
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: ../pages/crear_publicacion.html");
     exit;
 }
 
-// errores de validacion.
 function regresarConError($mensaje) {
     http_response_code(400);
-
     echo '<!DOCTYPE html>
     <html lang="es">
     <head>
@@ -25,116 +22,78 @@ function regresarConError($mensaje) {
         <a href="../pages/crear_publicacion.html">Volver al formulario</a>
     </body>
     </html>';
-
     exit;
 }
-
-// Verificamos la sesion.
+// Verificar que el usuario haya iniciado sesión.
 if (!isset($_SESSION["user_id"]) || (int) $_SESSION["user_id"] <= 0) {
     regresarConError("Debes iniciar sesión para crear una publicación.");
 }
-
+// Obtener el ID del usuario que inició sesión.
 $idUsuario = (int) $_SESSION["user_id"];
 
-// Obtenemos los datos del formulario.
 $tipo = $_POST["tipo_contenido"] ?? "";
 $contenido = trim($_POST["contenido"] ?? "");
-
 $idCategoria = filter_input(
     INPUT_POST,
     "id_categoria",
     FILTER_VALIDATE_INT
 );
 
-// Validamos la categoria.
 if (!$idCategoria || $idCategoria <= 0) {
     regresarConError("Selecciona una categoría válida.");
-}
+} 
 
-// Validamos el tipo de publicacion.
 $tiposPermitidos = ["texto", "imagen", "video"];
 
 if (!in_array($tipo, $tiposPermitidos, true)) {
     regresarConError("El tipo de publicación no es válido.");
 }
 
-// Validamos la longitud del texto.
 if (mb_strlen($contenido) > 2000) {
     regresarConError("El texto no puede superar los 2000 caracteres.");
 }
 
-// Inicializamos los archivos
-$imagenes = [];
 $archivoBinario = null;
 $nombreArchivo = null;
 $mimeType = null;
 $tamanoBytes = null;
 
-$limiteBytes = 50 * 1024 * 1024;
+$hayArchivo =
+    isset($_FILES["archivo"]) &&
+    $_FILES["archivo"]["error"] !== UPLOAD_ERR_NO_FILE;
 
-// Obtenemos archivos enviados desde el formulario
-$archivosRecibidos = $_FILES["archivos"] ?? null;
-
-$archivosSubidos = [];
-
-if ($archivosRecibidos !== null) {
-
-    if (
-        !isset(
-            $archivosRecibidos["name"],
-            $archivosRecibidos["type"],
-            $archivosRecibidos["tmp_name"],
-            $archivosRecibidos["error"],
-            $archivosRecibidos["size"]
-        ) ||
-        !is_array($archivosRecibidos["name"])
-    ) {
-        regresarConError("El formato de los archivos recibidos no es válido.");
-    }
-
-    foreach ($archivosRecibidos["name"] as $indice => $nombre) {
-
-        $errorArchivo = $archivosRecibidos["error"][$indice];
-
-        // Ignoramos el campo vacío cuando no se seleccionó ningún archivo.
-        if ($errorArchivo === UPLOAD_ERR_NO_FILE) {
-            continue;
-        }
-
-        $archivosSubidos[] = [
-            "name" => $nombre,
-            "type" => $archivosRecibidos["type"][$indice],
-            "tmp_name" => $archivosRecibidos["tmp_name"][$indice],
-            "error" => $errorArchivo,
-            "size" => $archivosRecibidos["size"][$indice]
-        ];
-    }
+if ($tipo === "texto" && $contenido === "") {
+    regresarConError("Escribe algo antes de publicar.");
 }
 
-// Validamos publicaciones de texto.
-if ($tipo === "texto") {
-
-    if ($contenido === "") {
-        regresarConError("Escribe algo antes de publicar.");
-    }
-
-    if (count($archivosSubidos) > 0) {
-        regresarConError("Las publicaciones de texto no deben contener archivos.");
-    }
+if (($tipo === "imagen" || $tipo === "video") && !$hayArchivo) {
+    regresarConError("Selecciona una imagen o un video.");
 }
 
-// Validamos publicaciones de imagen.
-if ($tipo === "imagen") {
+if ($tipo === "texto" && $hayArchivo) {
+    regresarConError("Para publicar un archivo, selecciona Imagen o Video.");
+}
 
-    $cantidadImagenes = count($archivosSubidos);
+if ($hayArchivo) {
+    $archivo = $_FILES["archivo"];
 
-    if ($cantidadImagenes === 0) {
-        regresarConError("Selecciona al menos una imagen.");
+    if ($archivo["error"] !== UPLOAD_ERR_OK) {
+        regresarConError("Ocurrió un error al cargar el archivo. Código: " . $archivo["error"]);
     }
 
-    if ($cantidadImagenes > 3) {
-        regresarConError("Solo puedes agregar hasta 3 imágenes por publicación.");
+    // Límite de 50 MiB por archivo
+    $limiteBytes = 50 * 1024 * 1024;
+
+    if ($archivo["size"] <= 0 || $archivo["size"] > $limiteBytes) {
+        regresarConError("El archivo debe pesar más de 0 bytes y no superar 50 MB.");
     }
+
+    if (!is_uploaded_file($archivo["tmp_name"])) {
+        regresarConError("El archivo recibido no es válido.");
+    }
+
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mimeDetectado = $finfo->file($archivo["tmp_name"]);
 
     $mimeImagenes = [
         "image/jpeg",
@@ -143,138 +102,59 @@ if ($tipo === "imagen") {
         "image/webp"
     ];
 
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-
-    foreach ($archivosSubidos as $archivo) {
-
-        if ($archivo["error"] !== UPLOAD_ERR_OK) {
-            regresarConError(
-                "Ocurrió un error al cargar una imagen. Código: " .
-                $archivo["error"]
-            );
-        }
-
-        if (
-            $archivo["size"] <= 0 ||
-            $archivo["size"] > $limiteBytes
-        ) {
-            regresarConError(
-                "Cada imagen debe pesar más de 0 bytes y no superar 50 MB."
-            );
-        }
-
-        if (!is_uploaded_file($archivo["tmp_name"])) {
-            regresarConError("Una de las imágenes recibidas no es válida.");
-        }
-
-        // Detectamos el formato real del archivo.
-        $mimeDetectado = $finfo->file($archivo["tmp_name"]);
-
-        if (!in_array($mimeDetectado, $mimeImagenes, true)) {
-            regresarConError(
-                "Solo se permiten imágenes JPG, PNG, GIF o WebP."
-            );
-        }
-
-        // Leemos los datos binarios.
-        $binario = file_get_contents($archivo["tmp_name"]);
-
-        if ($binario === false) {
-            regresarConError("No se pudo leer una de las imágenes.");
-        }
-
-        $imagenes[] = [
-            "binario" => $binario,
-            "nombre" => mb_substr(basename($archivo["name"]), 0, 255),
-            "mime" => $mimeDetectado,
-            "tamano" => (int) $archivo["size"]
-        ];
-    }
-}
-
-// Validamos publicaciones de video.
-if ($tipo === "video") {
-
-    if (count($archivosSubidos) !== 1) {
-        regresarConError("Selecciona exactamente un video.");
-    }
-
-    $archivo = $archivosSubidos[0];
-
-    if ($archivo["error"] !== UPLOAD_ERR_OK) {
-        regresarConError(
-            "Ocurrió un error al cargar el video. Código: " .
-            $archivo["error"]
-        );
-    }
-
-    if (
-        $archivo["size"] <= 0 ||
-        $archivo["size"] > $limiteBytes
-    ) {
-        regresarConError("El video debe pesar más de 0 bytes y no superar 50 MB.");
-    }
-
-    if (!is_uploaded_file($archivo["tmp_name"])) {
-        regresarConError("El video recibido no es válido.");
-    }
-
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mimeDetectado = $finfo->file($archivo["tmp_name"]);
-
     $mimeVideos = [
         "video/mp4",
         "video/webm"
     ];
 
-    if (!in_array($mimeDetectado, $mimeVideos, true)) {
-        regresarConError("El video debe estar en formato MP4 o WebM.");
+    if (
+        $tipo === "imagen" &&
+        !in_array($mimeDetectado, $mimeImagenes, true)
+    ) {
+        regresarConError("El archivo no es una imagen compatible (JPG, PNG, GIF o WebP).");
     }
+
+    if (
+        $tipo === "video" &&
+        !in_array($mimeDetectado, $mimeVideos, true)
+    ) {
+        regresarConError("El archivo no es un video compatible (MP4 o WebM).");
+    }
+
+    $nombreArchivo = basename($archivo["name"]);
+    $nombreArchivo = mb_substr($nombreArchivo, 0, 255);
+    $mimeType = $mimeDetectado;
+    $tamanoBytes = $archivo["size"];
 
     $archivoBinario = file_get_contents($archivo["tmp_name"]);
 
     if ($archivoBinario === false) {
-        regresarConError("No se pudo leer el video cargado.");
+        regresarConError("No se pudo leer el archivo cargado.");
     }
-
-    $nombreArchivo = mb_substr(
-        basename($archivo["name"]),
-        0,
-        255
-    );
-
-    $mimeType = $mimeDetectado;
-    $tamanoBytes = (int) $archivo["size"];
 }
 
-// Guardamos publicacion y archivos en una transaccion.
 try {
-
     $conexion->begin_transaction();
-
-    // Comprobar que la categoría exista.
+    // Validamos que la categoria seleccionada exista
     $stmtCategoria = $conexion->prepare(
-        "SELECT id_categoria
-         FROM CATEGORIAS
-         WHERE id_categoria = ?"
-    );
+     "SELECT id_categoria FROM CATEGORIAS WHERE id_categoria = ?"
+);
 
-    $stmtCategoria->bind_param("i", $idCategoria);
-    $stmtCategoria->execute();
+$stmtCategoria->bind_param("i", $idCategoria);
+$stmtCategoria->execute();
 
-    $resultadoCategoria = $stmtCategoria->get_result();
-    $categoriaFila = $resultadoCategoria->fetch_assoc();
+$resultadoCategoria = $stmtCategoria->get_result();
+$categoriaFila = $resultadoCategoria->fetch_assoc();
 
-    $stmtCategoria->close();
+$stmtCategoria->close();
 
-    if (!$categoriaFila) {
-        $conexion->rollback();
-        regresarConError("La categoría seleccionada no existe.");
-    }
+if (!$categoriaFila) {
+    $conexion->rollback();
+    regresarConError("La categoría seleccionada no existe.");
+}
+// asosiamos los datos a la consulta 
+$idCategoria = (int) $categoriaFila["id_categoria"];
 
-    $idCategoria = (int) $categoriaFila["id_categoria"];
-
-    // Insertamos la publicacion principal.
     $sql = "INSERT INTO PUBLICACIONES
         (
             id_usuario,
@@ -290,6 +170,7 @@ try {
 
     $stmt = $conexion->prepare($sql);
 
+    // multimedia es un dato binario.
     $stmt->bind_param(
         "iissbssi",
         $idUsuario,
@@ -302,80 +183,27 @@ try {
         $tamanoBytes
     );
 
-    // El video se en PUBLICACIONES.multimedia.
+    // Envia el BLOB mediante el protocolo de MySQL.
     if ($archivoBinario !== null) {
         $stmt->send_long_data(4, $archivoBinario);
     }
 
     $stmt->execute();
-
-    // Obtenemos el ID de la publicacion recien creada
-    $idPublicacion = $conexion->insert_id;
-
     $stmt->close();
 
-    // Guardamos las imagenes en la tabla adicional
-    if ($tipo === "imagen") {
-
-        $sqlImagen = "INSERT INTO PUBLICACION_MULTIMEDIA
-            (
-                id_publicacion,
-                multimedia,
-                nombre_archivo,
-                mime_type,
-                tamano_bytes,
-                orden
-            )
-            VALUES (?, ?, ?, ?, ?, ?)";
-
-        $stmtImagen = $conexion->prepare($sqlImagen);
-
-        foreach ($imagenes as $indice => $imagen) {
-
-            $binarioImagen = $imagen["binario"];
-            $nombreImagen = $imagen["nombre"];
-            $mimeImagen = $imagen["mime"];
-            $tamanoImagen = $imagen["tamano"];
-            $ordenImagen = $indice + 1;
-
-            $stmtImagen->bind_param(
-                "ibssii",
-                $idPublicacion,
-                $binarioImagen,
-                $nombreImagen,
-                $mimeImagen,
-                $tamanoImagen,
-                $ordenImagen
-            );
-
-            // Enviamos el BLOB de la imagen a MySQL.
-            $stmtImagen->send_long_data(1, $binarioImagen);
-
-            $stmtImagen->execute();
-        }
-
-        $stmtImagen->close();
-    }
-
-    // Confirmamos los cambios.
     $conexion->commit();
 
     header("Location: ../pages/feed.html?publicacion=exitosa");
     exit;
 
 } catch (Throwable $e) {
-
     try {
         $conexion->rollback();
     } catch (Throwable $ignorado) {
     }
 
-    error_log(
-        "Error al guardar publicación: " . $e->getMessage()
-    );
-
+    error_log("Error al guardar publicación: " . $e->getMessage());
     http_response_code(500);
     echo "No se pudo guardar la publicación. Revisa la configuración de PHP y MySQL y el registro de errores del servidor.";
     exit;
 }
- 

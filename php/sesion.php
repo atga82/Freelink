@@ -1,5 +1,5 @@
 <?php
-// Configuracion de seguridad de las sesiones.
+// Configuración de seguridad de las sesiones.
 ini_set('session.use_strict_mode', '1');
 ini_set('session.use_only_cookies', '1');
 

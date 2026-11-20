@@ -2,13 +2,13 @@
 require_once __DIR__ . '/sesion.php';
 require_once __DIR__ . '/conexion.php';
 
-// Verificamos la sesion.
+// Verificar sesión.
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     exit;
 }
 
-// Obtenemos el ID del usuario cuya fotografía queremos mostrar
+// Obtener el ID del usuario cuya fotografía queremos mostrar.
 $idUsuario = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
 if (!$idUsuario || $idUsuario <= 0) {
@@ -38,7 +38,7 @@ try {
         exit;
     }
 
-    // Identificamos el tipo MIME real de la imagen.
+    // Identificar el tipo MIME real de la imagen.
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $mime = $finfo->buffer($usuario['foto_perfil']);
 
@@ -53,7 +53,7 @@ try {
         exit;
     }
 
-    // Devolvemos la imagen directamente al navegador.
+    // Devolver la imagen directamente al navegador.
     header('Content-Type: ' . $mime);
     header('X-Content-Type-Options: nosniff');
     header('Cache-Control: private, max-age=3600');

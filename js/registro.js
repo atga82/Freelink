@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!formulario) return;
 
-    // Muestra y ocultar contraseña
+    // Mostrar y ocultar contraseña
 
     const togglePassword = document.getElementById('toggleRegisterPassword');
 
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // Validamos el primer paso
+    // Validar primer paso
 
     function validarPaso1() {
 

@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     responder(false, 'Método no permitido.', 405);
 }
 
-// Recibimos datos del formulario
+// Recibir datos del formulario
 $nombre = trim($_POST['nombre'] ?? '');
 $correo = trim($_POST['correo'] ?? '');
 $password = $_POST['password'] ?? '';
@@ -26,7 +26,7 @@ $tipoUsuario = $_POST['tipo_usuario'] ?? '';
 
 $intereses = $_POST['intereses'] ?? [];
 
-// Validamos los campos 
+// Validar campos obligatorios
 if ($nombre === '' || $correo === '' || $password === '') {
     responder(false, 'Completa todos los campos obligatorios.', 400);
 }
@@ -43,7 +43,7 @@ if (mb_strlen($nombre) > 100) {
     responder(false, 'El nombre es demasiado largo.', 400);
 }
 
-// Validamos el tipo de usuario
+// Validar tipo de usuario
 $tiposPermitidos = [
     'vendedor_cliente',
     'cliente'
@@ -53,7 +53,7 @@ if (!in_array($tipoUsuario, $tiposPermitidos, true)) {
     responder(false, 'Selecciona un tipo de cuenta válido.', 400);
 }
 
-// Validamos los intereses
+// Validar intereses
 $interesesPermitidos = [
     'diseno',
     'programacion',
@@ -80,15 +80,15 @@ foreach ($intereses as $interes) {
     }
 }
 
-// Generamos hash seguro
+// Generar hash seguro
 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
 try {
 
-    // Iniciamos transaccióon
+    // Iniciar transacción
     $conexion->begin_transaction();
 
-    // Registramos usuario
+    // Registrar usuario
     $sql = "INSERT INTO USUARIOS (
                 nombre,
                 correo,
@@ -111,12 +111,12 @@ try {
 
     $stmt->execute();
 
-    // Obtenemos el ID del usuario recien registrado
+    // Obtener el ID del usuario recién registrado
     $idUsuario = $conexion->insert_id;
 
     $stmt->close();
 
-    // Preparamos insercion de intereses
+    // Preparar inserción de intereses
     if (!empty($intereses)) {
 
         $sqlIntereses = "INSERT INTO USUARIO_INTERESES (
@@ -140,7 +140,7 @@ try {
         $stmtIntereses->close();
     }
 
-    // Confirmamos registro y preferencias
+    // Confirmar registro y preferencias
     $conexion->commit();
 
     responder(
@@ -150,7 +150,7 @@ try {
 
 } catch (mysqli_sql_exception $e) {
 
-    // Si ocurre un error, se deshace toda la operación
+    // Si ocurre un error, deshacer toda la operación
     $conexion->rollback();
 
     if ($e->getCode() === 1062) {

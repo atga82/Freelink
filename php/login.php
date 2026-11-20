@@ -58,7 +58,7 @@ try {
         responder(false, 'Esta cuenta no se encuentra activa.', 403);
     }
 
-    // Evita la reutilizacion del identificador de sesion.
+    // Evitar reutilización del identificador de sesión.
     session_regenerate_id(true);
 
     $_SESSION['user_id'] = $usuario['id_usuario'];

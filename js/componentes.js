@@ -1,8 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
 
-    const esPaginaPrincipal = !window.location.pathname.includes('/pages/');
-    const rutaBase = esPaginaPrincipal ? '' : '../';
-
     //cargar navbar y footer
     async function cargarComponente(id, archivo) {
 
@@ -27,12 +24,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await Promise.all([
         cargarComponente(
             'navbar-container',
-            `${rutaBase}partials/navbar.html`
+            '../partials/navbar.html'
         ),
 
         cargarComponente(
             'footer-container',
-            `${rutaBase}partials/footer.html`
+            '../partials/footer.html'
         )
     ]);
 
@@ -59,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     //consultar la sesion php
     try {
 
-        const respuesta = await fetch(`${rutaBase}php/verificar_sesion.php`, {
+        const respuesta = await fetch('../php/verificar_sesion.php', {
             method: 'GET',
             credentials: 'same-origin'
         });

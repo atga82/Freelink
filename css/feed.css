@@ -15,17 +15,11 @@
 
 .feed-page { background: var(--feed-bg); color: var(--feed-text); }
 .feed-page button, .feed-page input, .feed-page textarea, .feed-page select { font: inherit; }
-.feed-header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 7%; background: #ffffffee; backdrop-filter: blur(10px); border-bottom: 1px solid var(--feed-border); }
-.feed-header nav { display: flex; align-items: center; gap: 22px; }
-.feed-header nav a { color: var(--feed-muted); font-size: 14px; font-weight: 600; text-decoration: none; }
-.feed-header nav a:hover, .feed-header nav a.active { color: var(--feed-primary); }
-.feed-header .logo, .footer-logo { color: var(--feed-text); font-weight: 800; font-size: 23px; text-decoration: none; }
-.feed-header .logo span, .footer-logo span { color: var(--feed-primary); }
 .profile-mini { display: flex; align-items: center; gap: 8px; color: var(--feed-text); font-size: 14px; font-weight: 700; text-decoration: none; }
 .profile-avatar, .sidebar-profile-avatar, .post-avatar, .comment-avatar, .suggestion-avatar { display: grid; flex: 0 0 auto; place-items: center; border-radius: 50%; color: white; font-weight: 800; }
 .profile-avatar { width: 36px; height: 36px; background: var(--feed-primary); font-size: 12px; }
-.feed-container { width: min(1120px, 100%); margin: auto; padding: 42px 28px 64px; }
-.feed-intro { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+.feed-container { width: min(1120px, 100%); margin: auto; padding: 25px 28px 64px; }
+.feed-intro { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 12px; }
 .feed-intro h1 { margin: 0; font-size: clamp(32px, 4vw, 48px); line-height: 1.1; letter-spacing: -1.5px; }
 .feed-intro h1 span { color: var(--feed-primary); }
 .create-post-btn, .publish-post { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border: 0; border-radius: 10px; background: var(--feed-primary); color: white; font-weight: 700; white-space: nowrap; }
@@ -118,29 +112,18 @@
 .post-category label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: 700; }
 .form-message { margin: 8px 0 0; color: #a43c3c; font-size: 12px; }
 .cancel-post { padding: 9px 13px; border: 0; border-radius: 9px; background: var(--feed-soft); color: var(--feed-primary); font-weight: 700; }
-.freelink-footer { padding: 20px 7%; border-top: 1px solid var(--feed-border); background: white; }
-.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 1120px; margin: auto; }
-.footer-logo { font-size: 19px; }
-.footer-inner p { margin: 2px 0 0; color: var(--feed-muted); font-size: 12px; }
-.footer-inner small { color: var(--feed-muted); }
 .empty-state { padding: 28px; border: 1px dashed #ddd5f1; border-radius: 14px; color: var(--feed-muted); text-align: center; }
 
 @media (max-width: 950px) {
-  .feed-header { padding-inline: 4%; }
-  .feed-header nav { gap: 12px; }
   .feed-layout { grid-template-columns: minmax(0, 1fr); }
   .feed-sidebar { position: static; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 700px) {
-  .feed-header { flex-wrap: wrap; gap: 10px; }
-  .feed-header nav { order: 3; width: 100%; justify-content: space-between; overflow-x: auto; }
-  .feed-header nav a { white-space: nowrap; font-size: 12px; }
   .feed-container { padding: 28px 4% 42px; }
   .feed-intro { align-items: flex-start; flex-direction: column; gap: 15px; }
   .feed-intro h1 { font-size: 34px; }
   .feed-sidebar { grid-template-columns: 1fr; }
   .media-placeholder { min-height: 210px; }
-  .footer-inner { align-items: flex-start; flex-direction: column; }
 }
 @media (max-width: 420px) {
   .profile-mini > span:last-child { display: none; }
@@ -150,4 +133,25 @@
   .filter-btn { padding: 7px 9px; font-size: 12px; }
   .upload-options { grid-template-columns: 1fr; }
 }
- 
+
+/* Ajuste de espacios entre encabezado y filtros */
+.feed-page .feed-intro {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-bottom: 12px;
+}
+
+.feed-page .feed-filters {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+}
+
+
+
+/* Valoración persistente de publicaciones */
+.rating-row {display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid #eee;font-size:.9rem;}
+.rating-stars {display:inline-flex;gap:5px;}
+.rating-star {background:transparent;border:0;color:#e2a500;font-size:1.3rem;cursor:pointer;padding:4px;}
+.rating-star:hover,.rating-star:focus-visible {color:#f6b800;transform:scale(1.12);}
+.rating-star:disabled {opacity:.5;cursor:wait;}

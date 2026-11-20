@@ -19,134 +19,49 @@ function renderizarComentarios(comentarios) {
     </div>`).join('');
 }
 
-
 function renderizarPublicacion(post) {
-
-  let medio = '';
-
-  // NUEVO: mostrar varias imágenes de una publicación.
-  if (post.tipo === 'image' && post.imagenes.length > 0) {
-
-    medio = post.imagenes.map((imagen, indice) => `
-      <img
-        src="${escaparHTML(imagen.url)}"
-        alt="Imagen ${indice + 1} compartida por ${escaparHTML(post.autor)}"
-        loading="lazy"
-      >
-    `).join('');
-
-  // Video nuevo o antiguo.
-  } else if (post.tipo === 'video' && post.url) {
-
-    medio = `
-      <video
-        src="${escaparHTML(post.url)}"
-        controls
-        preload="metadata"
-      ></video>
-    `;
-
-  // Imagen antigua almacenada directamente en PUBLICACIONES.
-  } else if (post.tipo === 'image' && post.url) {
-
-    medio = `
-      <img
-        src="${escaparHTML(post.url)}"
-        alt="Archivo compartido por ${escaparHTML(post.autor)}"
-        loading="lazy"
-      >
-    `;
-
-  // Publicación sin archivo multimedia.
-  } else if (post.tipo !== 'text') {
-
-    medio = `
-      <div class="media-placeholder purple-media">
-        <i class="bi ${post.tipo === 'video' ? 'bi-play-btn' : 'bi-image'}"></i>
-        <span>${escaparHTML(post.media || 'Contenido multimedia')}</span>
-      </div>
-    `;
-  }
+  
+const medio = post.tipo === 'text'
+  ? ''
+  : post.url
+    ? (post.tipo === 'video'
+      ? `<video src="${escaparHTML(post.url)}" controls preload="metadata"></video>`
+      : `<img src="${escaparHTML(post.url)}" alt="Archivo compartido por ${escaparHTML(post.autor)}">`)
+    : `<div class="media-placeholder purple-media">
+         <i class="bi ${post.tipo === 'video' ? 'bi-play-btn' : 'bi-image'}"></i>
+         <span>${escaparHTML(post.media || 'Contenido multimedia')}</span>
+       </div>`;
 
   return `<article class="post-card" data-type="${escaparHTML(post.tipo)}" data-category="${escaparHTML(post.categoria)}" data-post-id="${post.id}">
-    <div class="post-header">
-      <div class="post-user">
+    <div class="post-header"><div class="post-user">
         <span
-          class="post-avatar avatar-${escaparHTML(post.avatar)}"
-          style="position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: center;"
+            class="post-avatar avatar-${escaparHTML(post.avatar)}"
+            style="position: relative; overflow: hidden; display: inline-flex; align-items: center; justify-content: 
+        center;"
         >
-          ${escaparHTML(post.iniciales)}
+            ${escaparHTML(post.iniciales)}
 
-          ${post.fotoPerfil ? `
-            <img
-              src="${escaparHTML(post.fotoPerfil)}"
-              alt="Foto de ${escaparHTML(post.autor)}"
-              style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
-              onerror="this.remove()"
-            >
-          ` : ''}
+            ${post.fotoPerfil ? `
+                <img
+                    src="${escaparHTML(post.fotoPerfil)}"
+                    alt="Foto de ${escaparHTML(post.autor)}"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"
+                    onerror="this.remove()"
+                >
+            ` : ''}
         </span>
-
-        <div>
-          <strong>${escaparHTML(post.autor)}</strong>
-          <span>${escaparHTML(post.profesion)} · ${escaparHTML(post.tiempo)}</span>
-        </div>
-      </div>
-
-      <button class="post-menu" type="button" aria-label="Más opciones">
-        <i class="bi bi-three-dots"></i>
-      </button>
+    <div><strong>${escaparHTML(post.autor)}</strong><span>${escaparHTML(post.profesion)} · ${escaparHTML(post.tiempo)}</span></div></div><button class="post-menu" type="button" aria-label="Más opciones"><i class="bi bi-three-dots"></i></button></div>
+    <div class="post-content"><p>${escaparHTML(post.texto)}</p><div class="post-tags"><span>#${escaparHTML(post.etiqueta)}</span></div></div>
+    ${medio ? `<div class="post-media ${post.tipo === 'video' ? 'video-media' : ''}">${medio}</div>` : ''} 
+    <div class="post-actions"><button class="action-btn like-btn" type="button" aria-pressed="false"><i class="bi bi-heart"></i><span>${post.likes}</span></button><button class="action-btn comment-btn" type="button"><i class="bi bi-chat"></i><span>${post.totalComentarios}</span></button></div>
+    <div class="rating-row" aria-label="Valorar publicación de una a cinco estrellas">
+      <span>Calificación: ${post.promedioEstrellas ? post.promedioEstrellas.toFixed(1) + '/5' : 'Sin votos'} (${post.totalValoraciones})</span>
+      <div class="rating-stars">${[1,2,3,4,5].map(n => `<button type="button" class="rating-star" data-stars="${n}" aria-label="Dar ${n} estrella${n>1?'s':''}" title="${n} estrellas"><i class="bi ${n <= post.misEstrellas ? 'bi-star-fill' : 'bi-star'}"></i></button>`).join('')}</div>
     </div>
-
-    <div class="post-content">
-      <p>${escaparHTML(post.texto)}</p>
-      <div class="post-tags">
-        <span>#${escaparHTML(post.etiqueta)}</span>
-      </div>
-    </div>
-
-    ${medio ? `
-      <div class="post-media ${post.tipo === 'video' ? 'video-media' : ''}">
-        ${medio}
-      </div>
-    ` : ''}
-
-    <div class="post-actions">
-      <button class="action-btn like-btn" type="button" aria-pressed="false">
-        <i class="bi bi-heart"></i>
-        <span>${post.likes}</span>
-      </button>
-
-      <button class="action-btn comment-btn" type="button">
-        <i class="bi bi-chat"></i>
-        <span>${post.comentarios.length}</span>
-      </button>
-    </div>
-
-    <section class="comments-section">
-      <div class="comments-title">Comentarios</div>
-
-      <div class="comments-list">
-        ${renderizarComentarios(post.comentarios)}
-      </div>
-
-      <form class="comment-form">
-        <span class="comment-avatar avatar-user">CG</span>
-        <input
-          type="text"
-          name="comment"
-          maxlength="300"
-          placeholder="Escribe un comentario..."
-          aria-label="Escribe un comentario"
-          required
-        >
-        <button type="submit" aria-label="Enviar comentario">
-          <i class="bi bi-send"></i>
-        </button>
-      </form>
-    </section>
+    <section class="comments-section"><div class="comments-title">Comentarios</div><div class="comments-list">${renderizarComentarios(post.comentarios)}</div><form class="comment-form"><span class="comment-avatar avatar-user">CG</span><input type="text" name="comment" maxlength="300" placeholder="Escribe un comentario..." aria-label="Escribe un comentario" required><button type="submit" aria-label="Enviar comentario"><i class="bi bi-send"></i></button></form></section>
   </article>`;
 }
+
 
 async function cargarPublicaciones() {
   postsContainer.innerHTML =
@@ -202,22 +117,16 @@ async function cargarPublicaciones() {
           })
         : 'Fecha no disponible';
 
-      // URL para videos nuevos y archivos antiguos.
-      let url = '';
+     let url = '';
 
-      if (
-        post.tiene_multimedia &&
-        (post.tipo_contenido === 'imagen' ||
-        post.tipo_contenido === 'video')
-      ) {
-        url = '../php/obtener_multimedia.php?id='
-          + encodeURIComponent(post.id_publicacion);
+     if (
+       post.tiene_multimedia &&
+       (post.tipo_contenido === 'imagen' ||
+       post.tipo_contenido === 'video')
+       ) {
+       url = '../php/obtener_multimedia.php?id='
+       + encodeURIComponent(post.id_publicacion);
       }
-
-      // obtenemos las imagenes individuales de la publicación.
-      const imagenes = Array.isArray(post.multimedia_imagenes)
-        ? post.multimedia_imagenes
-        : [];
 
       console.log(
           "URL DE FOTO:",
@@ -254,15 +163,29 @@ async function cargarPublicaciones() {
         avatar: 'purple',
         media: post.nombre_archivo || 'Publicación de texto',
         url,
-        imagenes,
         likes: 0,
-        comentarios: []
+        comentarios: [],
+        totalComentarios: Number(post.total_comentarios || 0),
+        promedioEstrellas: Number(post.promedio_estrellas || 0),
+        totalValoraciones: Number(post.total_valoraciones || 0),
+        misEstrellas: Number(post.mis_estrellas || 0)
       };
     });
 
     console.log("PRIMER OBJETO TRANSFORMADO:", publicaciones[0]);
     console.log("ID USUARIO TRANSFORMADO:", publicaciones[0]?.idUsuario);
     console.log("FOTO PERFIL TRANSFORMADA:", publicaciones[0]?.fotoPerfil);
+    renderizarPublicaciones();
+    await Promise.all(publicaciones.map(async post => {
+      try {
+        const respuesta = await fetch('../php/interacciones.php?id=' + encodeURIComponent(post.id), {credentials: 'same-origin'});
+        if (!respuesta.ok) throw new Error('No se pudieron consultar los comentarios');
+        const datos = await respuesta.json();
+        post.comentarios = (datos.comentarios || []).map(c => ({
+          autor: c.autor, iniciales: c.autor.trim().slice(0,2).toUpperCase(), avatar:'user', texto:c.contenido
+        }));
+      } catch (e) { console.error('Comentarios de publicación ' + post.id, e); }
+    }));
     renderizarPublicaciones();
 
   } catch (error) {
@@ -297,7 +220,7 @@ document.querySelector('.filters').addEventListener('click', event => {
   renderizarPublicaciones();
 });
 
-postsContainer.addEventListener('click', event => {
+postsContainer.addEventListener('click', async event => {
   const tarjeta = event.target.closest('[data-post-id]');
   if (!tarjeta) return;
   const post = publicaciones.find(item => item.id === Number(tarjeta.dataset.postId));
@@ -311,9 +234,20 @@ postsContainer.addEventListener('click', event => {
     likeButton.querySelector('span').textContent = post.likes;
   }
   if (event.target.closest('.comment-btn')) tarjeta.querySelector('.comment-form input').focus();
+  const estrella = event.target.closest('[data-stars]');
+  if (estrella) {
+    estrella.disabled = true;
+    try {
+      const body = new URLSearchParams({accion:'valorar', id_publicacion:String(post.id), estrellas:estrella.dataset.stars});
+      const r = await fetch('../php/guardar_interaccion.php', {method:'POST',credentials:'same-origin',body});
+      const datos = await r.json();
+      if (!r.ok) throw new Error(datos.error || 'No se pudo valorar');
+      await cargarPublicaciones();
+    } catch (e) { alert(e.message); estrella.disabled = false; }
+  }
 });
 
-postsContainer.addEventListener('submit', event => {
+postsContainer.addEventListener('submit', async event => {
   if (!event.target.matches('.comment-form')) return;
   event.preventDefault();
   const input = event.target.elements.comment;
@@ -321,10 +255,15 @@ postsContainer.addEventListener('submit', event => {
   if (!texto) return;
   const tarjeta = event.target.closest('[data-post-id]');
   const post = publicaciones.find(item => item.id === Number(tarjeta.dataset.postId));
-  post.comentarios.push({ autor: 'Cesar García', iniciales: 'CG', avatar: 'user', texto });
-  renderizarPublicaciones();
-  const actualizada = postsContainer.querySelector(`[data-post-id="${post.id}"] .comment-form input`);
-  if (actualizada) actualizada.focus();
+  const boton = event.target.querySelector('button[type="submit"]');
+  boton.disabled = true;
+  try {
+    const body = new URLSearchParams({accion:'comentar', id_publicacion:String(post.id), contenido:texto});
+    const r = await fetch('../php/guardar_interaccion.php', {method:'POST',credentials:'same-origin',body});
+    const datos = await r.json();
+    if (!r.ok) throw new Error(datos.error || 'No se pudo guardar el comentario');
+    await cargarPublicaciones();
+  } catch (e) { alert(e.message); boton.disabled = false; }
 });
 
 suggestionsContainer.addEventListener('click', event => {

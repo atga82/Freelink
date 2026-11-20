@@ -4,7 +4,7 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/sesion.php';
 require_once __DIR__ . '/conexion.php';
 
-// Comprobamos que exista una sesion iniciada.
+// Comprobar que exista una sesión iniciada.
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
 
@@ -19,7 +19,7 @@ if (!isset($_SESSION['user_id'])) {
 try {
     $idUsuario = (int) $_SESSION['user_id'];
 
-    // Consultamos al usuario de la sesion actual.
+    // Consultar únicamente al usuario de la sesión actual.
     $sql = "SELECT
                 id_usuario,
                 nombre,
@@ -51,7 +51,7 @@ try {
         $stmt->close();
         exit;
     }
-    // Consultamos las areas de interes del usuario.
+    // Consultar las áreas de interés del usuario.
     $sqlIntereses = "SELECT interes
                      FROM USUARIO_INTERESES
                      WHERE id_usuario = ?
@@ -70,7 +70,7 @@ try {
     }
 
     $stmtIntereses->close();
-    // Convertimos la foto BLOB a Base64 para enviarla en JSON.
+    // Convertir la foto BLOB a Base64 para enviarla en JSON.
     $foto = null;
 
     if (!empty($usuario['foto_perfil'])) {

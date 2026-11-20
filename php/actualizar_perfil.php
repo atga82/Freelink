@@ -4,7 +4,7 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/sesion.php';
 require_once __DIR__ . '/conexion.php';
 
-// Verificamos la sesion.
+// Verificar sesión.
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
 
@@ -16,7 +16,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Verificamos  metodo.
+// Verificar método.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
 
@@ -65,7 +65,7 @@ try {
 
         $archivo = $_FILES['foto_perfil'];
 
-        // errores de carga.
+        // Comprobar errores de carga.
         if ($archivo['error'] !== UPLOAD_ERR_OK) {
             throw new RuntimeException(
                 'Ocurrió un error al recibir la imagen.'
@@ -81,7 +81,7 @@ try {
             );
         }
 
-        // Comprobamos que realmente sea una imagen.
+        // Comprobar que realmente sea una imagen.
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mime = $finfo->file($archivo['tmp_name']);
 
@@ -103,7 +103,7 @@ try {
             );
         }
 
-        // Leemos el archivo para almacenarlo como BLOB.
+        // Leer el archivo para almacenarlo como BLOB.
         $contenidoFoto = file_get_contents($archivo['tmp_name']);
 
         if ($contenidoFoto === false) {
@@ -112,7 +112,7 @@ try {
             );
         }
 
-        // Actualizamos nombre, biografía y fotografía.
+        // Actualizar nombre, biografía y fotografía.
         $sql = "UPDATE USUARIOS
                 SET nombre = ?, biografia = ?, foto_perfil = ?
                 WHERE id_usuario = ?
@@ -130,7 +130,7 @@ try {
             $idUsuario
         );
 
-        // Enviamos el contenido binario al parámetro BLOB.
+        // Enviar el contenido binario al parámetro BLOB.
         $stmt->send_long_data(2, $contenidoFoto);
 
     } else {
@@ -154,7 +154,7 @@ try {
     $stmt->execute();
     $stmt->close();
 
-    // Comprobamos que el usuario exista.
+    // Comprobar que el usuario exista.
     $consulta = $conexion->prepare(
         "SELECT id_usuario
          FROM USUARIOS
@@ -181,7 +181,7 @@ try {
         exit;
     }
 
-    // Actualizamos el nombre en la sesion.
+    // Actualizar nombre en la sesión.
     $_SESSION['nombre'] = $nombre;
 
     echo json_encode([

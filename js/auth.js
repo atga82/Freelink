@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginBtnText = document.getElementById('loginBtnText');
     const loginSpinner = document.getElementById('loginSpinner');
 
-    // Comprobamos que estamos en la página de inicio de sesión.
+    // Comprobar que estamos en la página de inicio de sesión.
     if (!loginForm || !correo || !password) return;
 
     // Mensajes de error de los campos.
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .closest('.mb-3')
         .querySelector('.invalid-feedback');
 
-    // Mostramos error en un campo.
+    // Mostrar error en un campo.
     function mostrarError(input, mensaje, texto) {
 
         input.classList.add('is-invalid');
@@ -44,14 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
         mensaje.textContent = '';
     }
 
-    // Mostramos el mensaje general.
+    // Mostrar mensaje general.
     function mostrarMensaje(texto, tipo = 'danger') {
 
         loginMessage.className = `alert alert-${tipo}`;
         loginMessage.textContent = texto;
     }
 
-    // Validamos correo electrónico.
+    // Validar correo electrónico.
     function validarCorreo() {
 
         const valor = correo.value.trim();
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // Validamos el correo al escribir.
+    // Validar correo al escribir.
     correo.addEventListener('input', () => {
 
         if (correo.classList.contains('is-invalid')) {
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     correo.addEventListener('blur', validarCorreo);
 
-    // Validamos contraseña al escribir.
+    // Validar contraseña al escribir.
     password.addEventListener('input', () => {
 
         if (password.classList.contains('is-invalid')) {
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'success'
             );
 
-            // Redirigimos al feed despues de autenticar.
+            // Redirigir al feed después de autenticar.
             window.location.href =
                 resultado.redirect || 'feed.html';
 
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
-    // Recuperacion de contraseña.
+    // Recuperación de contraseña.
     if (forgotPassword) {
 
         forgotPassword.addEventListener('click', (event) => {
