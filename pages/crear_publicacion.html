@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear publicación | FreeLink</title>
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="stylesheet" href="../librerias/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../librerias/bootstrap-icons/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/crear_publicacion.css">
     <link rel="stylesheet" href="../css/componentes.css">
@@ -24,7 +23,7 @@
         <div class="encabezado-publicacion">
             <div>
                 <a href="feed.html" class="volver-feed">
-                    <i class="fa-solid fa-arrow-left"></i> Volver al feed
+                    <i class="bi bi-arrow-left"></i> Volver al feed 
                 </a>
                 <h1>Crear publicación</h1>
             </div>
@@ -67,7 +66,7 @@
                             value="imagen"
                             checked
                         >
-                        <i class="fa-regular fa-image"></i>
+                        <i class="bi bi-image"></i>
                         <span>Fotos</span>
                     </label>
 
@@ -77,7 +76,7 @@
                             name="tipo_contenido"
                             value="video"
                         >
-                        <i class="fa-solid fa-video"></i>
+                        <i class="bi bi-camera-video"></i>
                         <span>Videos</span>
                     </label>
 
@@ -87,7 +86,7 @@
                             name="tipo_contenido"
                             value="texto"
                         >
-                        <i class="fa-solid fa-align-left"></i>
+                        <i class="bi bi-text-left"></i>
                         <span>Solo texto</span>
                     </label>
 
@@ -117,7 +116,7 @@
                         for="archivosPublicacion"
                         class="recuadro-seleccion-archivo"
                     >
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <i class="bi bi-cloud-arrow-up"></i>
 
                         <strong>Selecciona un archivo</strong>
 
@@ -150,7 +149,7 @@
             <section class="seccion-vista-previa">
 
                 <h2>
-                    <i class="fa-regular fa-eye"></i> Vista previa
+                    <i class="bi bi-eye"></i> Vista previa
                 </h2>
 
                 <div class="tarjeta-vista-previa">
@@ -178,7 +177,7 @@
                 </a>
 
                 <button type="submit" class="boton-publicar">
-                    <i class="fa-solid fa-paper-plane"></i>
+                    <i class="bi bi-send-fill"></i> 
                     Publicar
                 </button>
 
@@ -196,13 +195,8 @@
 
     </main>
 
-    <!-- FOOTER COMPARTIDO -->
     <div id="footer-container"></div>
-
-    <!-- COMPONENTES COMPARTIDOS -->
     <script src="../js/componentes.js"></script>
-
-    <!-- FUNCIONALIDAD DE CREAR PUBLICACIÓN -->
     <script src="../js/crear_publicacion.js"></script>
 
 </body>
