@@ -1,0 +1,282 @@
+.freelink-header {    /*NAVBAR COMPARTIDO - FREELINK */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 24px;
+
+    padding: 14px 7%;
+
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+
+    border-bottom: 1px solid #e8e4f1;
+}
+
+/* Logo */
+
+.freelink-header .logo {
+    flex-shrink: 0;
+
+    font-size: 28px;
+    font-weight: 800;
+
+    color: #242238;
+    text-decoration: none;
+}
+
+.freelink-header .logo span {
+    color: #6c49d8;
+}
+
+/* Enlaces de navegación */
+
+.freelink-nav {
+    display: flex;
+    align-items: center;
+
+    gap: 22px;
+}
+
+.freelink-nav a {
+    color: #77728b;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.freelink-nav a:hover,
+.freelink-nav a.active {
+    color: #6c49d8;
+}
+
+/* Perfil del usuario */
+
+.profile-mini {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+
+    color: #242238;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.profile-mini:hover {
+    color: #6c49d8;
+}
+
+.profile-avatar {
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: #6c49d8;
+    color: white;
+
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* Iniciales como alternativa cuando no hay fotografía */
+.profile-avatar-container .profile-avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Ocultar correctamente los elementos con hidden */
+.profile-avatar-container .profile-avatar[hidden],
+.profile-avatar-img[hidden] {
+    display: none !important;
+}
+
+.profile-avatar-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 2px solid #e8e4f1;
+}
+
+.profile-avatar-img[hidden] {
+    display: none !important;
+}
+
+.profile-avatar-container .profile-avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+} 
+
+/* Visitantes */
+
+.freelink-guest {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.freelink-guest[hidden],
+.profile-mini[hidden] {
+    display: none !important;
+}
+
+/* footer compartido*/
+
+.freelink-footer {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+
+    padding: 30px 7%;
+
+    background: #211a35;
+    color: white;
+}
+
+/* Logo del footer */
+.freelink-footer .footer-logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.freelink-footer .footer-logo span {
+    color: #9b83ec;
+}
+
+/* Texto del footer */
+
+.freelink-footer p {
+    margin: 5px 0 0;
+
+    color: #c7c1d5;
+
+    font-size: 13px;
+}
+
+/* Copyright */
+
+.freelink-footer .footer-copyright {
+    color: #c7c1d5;
+
+    font-size: 12px;
+}
+
+/* Enlaces del footer */
+
+.freelink-footer .footer-links {
+    display: flex;
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 20px;
+}
+
+.freelink-footer .footer-links a {
+    color: #c7c1d5;
+
+    font-size: 13px;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.freelink-footer .footer-links a:hover {
+    color: white;
+}
+
+/* Diseño Responsivo*/
+
+@media (max-width: 850px) {
+
+    .freelink-header {
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 14px 5%;
+    }
+
+    .freelink-nav {
+        order: 3;
+
+        width: 100%;
+
+        justify-content: space-between;
+
+        gap: 14px;
+
+        overflow-x: auto;
+    }
+
+    .freelink-nav a {
+        white-space: nowrap;
+        font-size: 13px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .freelink-header {
+        padding: 12px 4%;
+    }
+
+    .freelink-header .logo {
+        font-size: 24px;
+    }
+
+    .freelink-nav {
+        gap: 16px;
+    }
+
+    .freelink-nav a {
+        font-size: 12px;
+    }
+
+    .profile-mini > span:last-child {
+        display: none;
+    }
+
+    .freelink-footer {
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 18px;
+
+        padding: 25px 5%;
+    }
+
+    .freelink-nav a::after {
+    display: none;
+    }
+}

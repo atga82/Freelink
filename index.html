@@ -22,45 +22,37 @@
     >
 
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/componentes.css"> 
 
 </head>
 
 
 <body class="freelink-home">
 
-    <header> <!--barra de navegacion-->
+    <header class="freelink-header">
 
         <a class="logo" href="#inicio">
             Free<span>Link</span>
         </a>
 
-        <nav>
-            <a href="#inicio">  Inicio  </a>
-
-            <a href="#como-funciona"> Cómo funciona  </a>
-
-            <a href="#explorar"> Explorar </a>
-
-            <a href="#servicios"> Servicios </a>
-
-            <a href="#marketplace"> Marketplace </a>
+        <nav class="freelink-nav">
+            <a href="#inicio">Inicio</a>
+            <a href="#como-funciona">Cómo funciona</a>
+            <a href="#explorar">Feed</a>
+            <a href="#servicios">Perfil</a>
+            <a href="#marketplace">Marketplace</a>
         </nav>
 
         <div class="d-flex gap-2">
-            <a
-                href="pages/login.html"
-                class="btn btn-outline-primary"
-            >
+            <a href="pages/login.html" class="btn btn-outline-primary">
                 Iniciar sesión
             </a>
 
-            <a
-                href="pages/registro.html"
-                class="btn btn-primary"
-            >
+            <a href="pages/registro.html" class="btn btn-primary">
                 Crear cuenta
             </a>
         </div>
+
     </header>
 
     <main>
@@ -78,23 +70,6 @@
                     ofrece tus servicios y vende tus productos desde
                     una sola plataforma.
                 </p>
-
-                <div class="d-flex flex-wrap gap-3 mt-4">
-
-                    <a
-                        href="pages/registro.html"
-                        class="btn btn-primary btn-lg"
-                    >
-                        Comenzar ahora
-                    </a>
-
-                    <a
-                        href="#explorar"
-                        class="btn btn-outline-primary btn-lg"
-                    >
-                        Explorar FreeLink
-                    </a>
-                </div>
             </div>
 
             <div class="hero-card"> <!--tarjeta de presentacion-->
@@ -115,12 +90,8 @@
                     </div>
 
                     <div>
-
-                        <small> PERFIL PROFESIONAL </small>
-
-                        <h2 class="mb-0"> César Jesús </h2>
-
-                        <p class="mb-0"> Diseñador 3D · Creador independiente </p>
+                        <h2 class="mb-0"> Perfil Profesional </h2>
+                        <p class="mb-0"> Creador independiente </p>
                     </div>
                 </div>
 
@@ -237,190 +208,143 @@
 
             <div class="heading">
                 <div>
-                    <small> DESCUBRE </small>
+                    <small> FEED DE FREELINK </small>
 
-                    <h2> Encuentra talento y nuevas ideas. </h2>
-
-                    <p>
-                        Explora perfiles, servicios y creaciones
-                        de personas independientes.
-                    </p>
-                </div>
-
-                <a
-                    href="pages/feed.html"
-                    class="btn btn-primary"
-                >
-                    Explorar todo
-                </a>
-            </div>
-
-
-            <div class="grid">
-                <article class="card"> <!--perfil 1-->
-
-                    <div class="visual">
-                        Modelado 3D
-                    </div>
-
-                    <div class="body">
-                        <div class="meta">
-                            <strong>  Ángel García </strong>
-
-                            <span class="price">  4.9 ★ </span>
-                        </div>
-
-                        <p>
-                            Diseñador 3D especializado en
-                            personajes y escenarios.
-                        </p>
-
-                        <div class="d-flex gap-2 flex-wrap">
-                            <span class="badge text-bg-light"> 3D </span>
-
-                            <span class="badge text-bg-light"> Diseño </span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="card"> <!--perfil 2-->
-                    <div class="visual">
-                        Fotografía
-                    </div>
-
-                    <div class="body">
-                        <div class="meta">
-                            <strong> Mariana Cruz </strong>
-
-                            <span class="price">  5.0 ★ </span>
-                        </div>
-
-                        <p>
-                            Fotografía de producto, retratos
-                            y contenido para redes.
-                        </p>
-
-                        <div class="d-flex gap-2 flex-wrap">
-                            <span class="badge text-bg-light"> Fotografía </span>
-
-                            <span class="badge text-bg-light"> Contenido </span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="card"> <!--perfil 3-->
-
-                    <div class="visual">
-                        Ilustración
-                    </div>
-
-                    <div class="body">
-                        <div class="meta">
-                            <strong> Sofía Vargas </strong>
-
-                            <span class="price"> 4.8 ★ </span>
-                        </div>
-
-                        <p>
-                            Ilustradora especializada en personajes
-                            y proyectos creativos.
-                        </p>
-
-                        <div class="d-flex gap-2 flex-wrap">
-                            <span class="badge text-bg-light"> Ilustración </span>
-
-                            <span class="badge text-bg-light"> Arte </span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <section id="servicios"> <!--servicios-->
-            <div class="heading">
-                <div>
-                    <small> SERVICIOS </small>
-
-                    <h2> Contrata lo que necesitas. </h2>
+                    <h2> Descubre lo que la comunidad tiene para ofrecer. </h2>
 
                     <p>
-                        Encuentra profesionales que pueden ayudarte
-                        con proyectos, trabajos y necesidades creativas.
+                        Explora las publicaciones de otros usuarios, conoce sus proyectos
+                        y comparte tus propias creaciones. En el Feed de FreeLink puedes
+                        descubrir talento, inspirarte y conectar con la comunidad.
                     </p>
                 </div>
-
-                <a
-                    href="pages/marketplace.html"
-                    class="btn btn-primary"
-                >
-                    Ver servicios
-                </a>
             </div>
 
             <div class="grid">
-                <article class="card">
 
-                    <div class="visual"> Diseño gráfico </div>
+                <article class="card">
+                    <div class="visual">
+                        <i class="bi bi-images"></i>
+                        Publicaciones
+                    </div>
 
                     <div class="body">
-                        <h3>  Diseño de logotipo </h3>
+                        <h3> Comparte tu trabajo </h3>
 
                         <p>
-                            Creación de identidad visual
-                            para proyectos y negocios.
+                            Publica imágenes, videos y contenido para mostrar
+                            tus proyectos, habilidades y creaciones.
                         </p>
-
-                        <div class="meta">
-                            <span> Ángel García </span>
-
-                            <span class="price"> Desde $500 </span>
-                        </div>
                     </div>
                 </article>
 
                 <article class="card">
                     <div class="visual">
-                        Modelado 3D
+                        <i class="bi bi-compass"></i>
+                        Descubrimiento
                     </div>
 
                     <div class="body">
-                        <h3> Modelado de personajes</h3>
+                        <h3> Descubre nuevos talentos </h3>
 
                         <p>
-                            Modelado 3D para videojuegos,
-                            proyectos y presentaciones.
+                            Conoce las publicaciones de otros usuarios,
+                            explora diferentes trabajos y encuentra
+                            nuevas ideas e inspiración.
                         </p>
-
-                        <div class="meta">
-                            <span> Ángel García </span>
-
-                            <span class="price"> Desde $850 </span>
-                        </div>
                     </div>
                 </article>
 
                 <article class="card">
                     <div class="visual">
-                        Edición de video
+                        <i class="bi bi-tags"></i>
+                        Categorías
                     </div>
 
                     <div class="body">
-                        <h3> Edición de contenido </h3>
+                        <h3> Explora por categorías </h3>
 
                         <p>
-                            Edición de videos para proyectos,
-                            redes sociales y contenido digital.
+                            Encuentra contenido organizado por áreas
+                            como diseño, programación, fotografía,
+                            video, música y otras disciplinas.
                         </p>
-
-                        <div class="meta">
-                            <span> Sofía Vargas </span>
-
-                            <span class="price"> Desde $700 </span>
-                        </div>
                     </div>
                 </article>
+
             </div>
         </section>
+
+        
+        <section id="servicios"> <!--perfil-->
+             <div class="heading">
+                 <div>
+                     <small> PERFIL PROFESIONAL </small>
+
+                     <h2> Presenta quién eres y muestra tu talento. </h2>
+
+                     <p>
+                         Crea tu perfil en FreeLink, comparte tu información
+                         personal y profesional, destaca tus habilidades y permite
+                         que otros usuarios conozcan más sobre ti y tu trabajo.
+                     </p>
+                 </div>
+             </div>
+
+             <div class="grid">
+
+                 <article class="card">
+                     <div class="visual">
+                         <i class="bi bi-person-circle"></i>
+                         Información personal
+                     </div>
+
+                     <div class="body">
+                         <h3> Personaliza tu perfil </h3>
+
+                         <p>
+                             Agrega tu nombre, fotografía, biografía y
+                             otros datos para que la comunidad pueda
+                             conocerte mejor.
+                         </p>
+                     </div>
+                 </article>
+
+                 <article class="card">
+                     <div class="visual">
+                         <i class="bi bi-briefcase"></i>
+                         Información profesional
+                     </div>
+
+                     <div class="body">
+                         <h3> Destaca tus habilidades </h3>
+
+                         <p>
+                             Comparte tu profesión, experiencia, habilidades
+                             e intereses para mostrar lo que sabes hacer
+                             y el tipo de oportunidades que buscas.
+                         </p>
+                     </div>
+                 </article>
+
+                 <article class="card">
+                     <div class="visual">
+                         <i class="bi bi-images"></i>
+                         Tu actividad
+                     </div>
+
+                     <div class="body">
+                         <h3> Consulta tus publicaciones </h3>
+
+                         <p>
+                             Visualiza el contenido que has compartido
+                             en FreeLink y mantén tu trabajo organizado
+                             desde tu propio perfil.
+                         </p>
+                     </div>
+                 </article>
+             </div>
+         </section>
 
         <!--marketpalce-->
         <section
@@ -439,15 +363,7 @@
                         y vendidos directamente por sus autores.
                     </p>
                 </div>
-
-                <a
-                    href="pages/marketplace.html"
-                    class="btn btn-primary"
-                >
-                    Ir al Marketplace
-                </a>
             </div>
-
 
             <div class="grid">
                 <article class="card">
@@ -578,60 +494,16 @@
             </div>
         </section>
 
-        <section class="soft"> <!--cta final-->
-            <div class="hero-card text-center">
-                <small> EMPIEZA A CREAR TU ESPACIO </small>
-
-                <h2>  Tu talento tiene algo que ofrecer. </h2>
-
-                <p>
-                    Crea tu perfil en FreeLink, muestra tu trabajo
-                    y comienza a conectar con nuevas oportunidades.
-                </p>
-
-                <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
-                    <a
-                        href="pages/registro.html"
-                        class="btn btn-primary btn-lg"
-                    >
-                        Crear mi cuenta
-                    </a>
-
-                    <a
-                        href="pages/login.html"
-                        class="btn btn-outline-primary btn-lg"
-                    >
-                        Ya tengo una cuenta
-                    </a>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <footer> <!--pie de pagina-->
-        <div>
-            <b>
-                Free<span>Link</span>
-            </b>
-
-            <p>
-                Mostrar. Conectar. Vender. Crecer.
-            </p>
-        </div>
-
-        <div class="col-md-6 text-md-end">
-                    <small>
-                        </br>
-                        2026 FreeLink. Todos los derechos reservados.
-                    </small>
-        </div>
-    </footer>
+   <div id="footer-container"></div>
 
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     ></script>
 
     <script src="js/main.js"></script>
+    <script src="js/componentes.js"></script> 
 </body>
 </html>
 
