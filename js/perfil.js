@@ -10,6 +10,9 @@ function iniciarPerfil() {
     const fotoPerfil = document.getElementById('profilePhoto');
     const botonEditarFoto = document.getElementById('editPhoto');
     const inputFoto = document.getElementById('profilePhotoInput');
+    const portadaPerfil = document.getElementById('profileCover');
+    const botonEditarPortada = document.getElementById('editCover');
+    const inputPortada = document.getElementById('profileCoverInput');
     const campoNombre = document.getElementById('profileName');
     const campoBiografia = document.getElementById('profileBio');
 
@@ -396,6 +399,38 @@ function iniciarPerfil() {
         });
     }
 
+    // Cambiar portada sin modificar la fotografía ni los demás datos del perfil.
+    if (botonEditarPortada && inputPortada && portadaPerfil) {
+        botonEditarPortada.addEventListener('click', () => inputPortada.click());
+        inputPortada.addEventListener('change', async () => {
+            const archivo = inputPortada.files[0];
+            if (!archivo) return;
+            if (!['image/jpeg', 'image/png', 'image/webp'].includes(archivo.type) || archivo.size > 5 * 1024 * 1024) {
+                alert('Selecciona una imagen JPG, PNG o WebP de máximo 5 MB.');
+                inputPortada.value = '';
+                return;
+            }
+            botonEditarPortada.disabled = true;
+            try {
+                const formulario = new FormData();
+                formulario.append('foto_portada', archivo);
+                const respuesta = await fetch('../php/actualizar_portada.php', {method: 'POST', body: formulario, credentials: 'same-origin'});
+                const datos = await respuesta.json();
+                if (respuesta.status === 401) { window.location.replace('login.html'); return; }
+                if (!respuesta.ok || !datos.success) throw new Error(datos.message || 'No se pudo actualizar la portada.');
+                portadaPerfil.style.backgroundImage = `url('../php/obtener_portada.php?v=${Date.now()}')`;
+                portadaPerfil.classList.add('cover-with-photo');
+                alert('Portada actualizada correctamente.');
+            } catch (error) {
+                console.error('Error al guardar portada:', error);
+                alert(error.message || 'No se pudo guardar la portada.');
+            } finally {
+                botonEditarPortada.disabled = false;
+                inputPortada.value = '';
+            }
+        });
+    }
+
     // Cargar datos del usuario de la sesión.
     async function cargarPerfilUsuario() {
 
@@ -424,6 +459,17 @@ function iniciarPerfil() {
             }
 
             const usuario = datos.usuario;
+
+            if (portadaPerfil) {
+                fetch('../php/obtener_portada.php', {method: 'HEAD', credentials: 'same-origin'})
+                    .then(respuestaPortada => {
+                        if (respuestaPortada.ok) {
+                            portadaPerfil.style.backgroundImage = `url('../php/obtener_portada.php?v=${Date.now()}')`;
+                            portadaPerfil.classList.add('cover-with-photo');
+                        }
+                    })
+                    .catch(error => console.warn('No se pudo comprobar la portada:', error));
+            }
 
             // Mostrar nombre.
             if (nombrePerfil) {

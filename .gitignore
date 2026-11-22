@@ -17,3 +17,6 @@ Thumbs.db
 # Dependencias locales
 vendor/
 node_modules/
+
+# Conexion local a MySQL (credenciales)
+/php/conexion.php
