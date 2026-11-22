@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/sesion.php';
 require_once __DIR__ . '/conexion.php';
 
@@ -18,11 +19,8 @@ if (!$idUsuario || $idUsuario <= 0) {
 
 try {
 
-    $sql = "SELECT foto_perfil
-            FROM USUARIOS
-            WHERE id_usuario = ?
-              AND estado = 'activo'
-            LIMIT 1";
+    // Consultar fotografía mediante procedimiento almacenado.
+    $sql = "CALL sp_obtener_foto_perfil(?)";
 
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("i", $idUsuario);
@@ -31,8 +29,25 @@ try {
     $resultado = $stmt->get_result();
     $usuario = $resultado->fetch_assoc();
 
+    $resultado->free();
+
+    // Limpiar posibles resultados adicionales del CALL.
+    while ($stmt->more_results()) {
+
+        if (!$stmt->next_result()) {
+            break;
+        }
+
+        $resultadoExtra = $stmt->get_result();
+
+        if ($resultadoExtra) {
+            $resultadoExtra->free();
+        }
+    }
+
     $stmt->close();
 
+    // Comprobar que exista una fotografía.
     if (!$usuario || empty($usuario['foto_perfil'])) {
         http_response_code(404);
         exit;

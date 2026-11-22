@@ -4,53 +4,60 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/sesion.php';
 require_once __DIR__ . '/conexion.php';
 
-// Verificar sesión.
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
+// Responder en formato JSON.
+function responder($exito, $mensaje, $codigo = 200, $datos = []) {
+    http_response_code($codigo);
 
-    echo json_encode([
-        'success' => false,
-        'message' => 'Debes iniciar sesión.'
-    ]);
+    echo json_encode(array_merge([
+        'success' => $exito,
+        'message' => $mensaje
+    ], $datos), JSON_UNESCAPED_UNICODE);
 
     exit;
+}
+
+// Liberar los resultados pendientes de un CALL.
+function limpiarResultados($stmt) {
+
+    while ($stmt->more_results()) {
+
+        if (!$stmt->next_result()) {
+            break;
+        }
+
+        $resultadoExtra = $stmt->get_result();
+
+        if ($resultadoExtra) {
+            $resultadoExtra->free();
+        }
+    }
+}
+
+// Verificar sesión.
+if (!isset($_SESSION['user_id'])) {
+    responder(false, 'Debes iniciar sesión.', 401);
 }
 
 // Verificar método.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-
-    echo json_encode([
-        'success' => false,
-        'message' => 'Método no permitido.'
-    ]);
-
-    exit;
+    responder(false, 'Método no permitido.', 405);
 }
 
+// Recibir datos.
 $nombre = trim($_POST['nombre'] ?? '');
 $biografia = trim($_POST['biografia'] ?? '');
 
+// Validar campos.
 if ($nombre === '') {
-    http_response_code(400);
-
-    echo json_encode([
-        'success' => false,
-        'message' => 'El nombre es obligatorio.'
-    ]);
-
-    exit;
+    responder(false, 'El nombre es obligatorio.', 400);
 }
 
 if (mb_strlen($nombre) > 100 || mb_strlen($biografia) > 2000) {
-    http_response_code(400);
-
-    echo json_encode([
-        'success' => false,
-        'message' => 'Uno de los campos supera la longitud permitida.'
-    ]);
-
-    exit;
+    responder(
+        false,
+        'Uno de los campos supera la longitud permitida.',
+        400
+    );
 }
 
 try {
@@ -81,7 +88,7 @@ try {
             );
         }
 
-        // Comprobar que realmente sea una imagen.
+        // Comprobar el tipo MIME real.
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mime = $finfo->file($archivo['tmp_name']);
 
@@ -97,13 +104,14 @@ try {
             );
         }
 
+        // Comprobar que sea una imagen válida.
         if (getimagesize($archivo['tmp_name']) === false) {
             throw new RuntimeException(
                 'El archivo seleccionado no es una imagen válida.'
             );
         }
 
-        // Leer el archivo para almacenarlo como BLOB.
+        // Leer el contenido binario.
         $contenidoFoto = file_get_contents($archivo['tmp_name']);
 
         if ($contenidoFoto === false) {
@@ -112,98 +120,102 @@ try {
             );
         }
 
-        // Actualizar nombre, biografía y fotografía.
-        $sql = "UPDATE USUARIOS
-                SET nombre = ?, biografia = ?, foto_perfil = ?
-                WHERE id_usuario = ?
-                  AND estado = 'activo'";
+        // ==========================================
+        // ACTUALIZAR PERFIL CON FOTOGRAFÍA
+        // ==========================================
+
+        $sql = "CALL sp_actualizar_perfil_con_foto(?, ?, ?, ?)";
 
         $stmt = $conexion->prepare($sql);
 
+        // Variable temporal para enviar el BLOB.
         $fotoTemporal = '';
 
         $stmt->bind_param(
-            "ssbi",
+            "issb",
+            $idUsuario,
             $nombre,
             $biografia,
-            $fotoTemporal,
-            $idUsuario
+            $fotoTemporal
         );
 
-        // Enviar el contenido binario al parámetro BLOB.
-        $stmt->send_long_data(2, $contenidoFoto);
+        // Enviar el contenido binario al cuarto parámetro.
+        $stmt->send_long_data(3, $contenidoFoto);
 
     } else {
 
-        // Si no se seleccionó foto, conservar la anterior.
-        $sql = "UPDATE USUARIOS
-                SET nombre = ?, biografia = ?
-                WHERE id_usuario = ?
-                  AND estado = 'activo'";
+        // ==========================================
+        // ACTUALIZAR PERFIL SIN CAMBIAR FOTOGRAFÍA
+        // ==========================================
+
+        $sql = "CALL sp_actualizar_perfil(?, ?, ?)";
 
         $stmt = $conexion->prepare($sql);
 
         $stmt->bind_param(
-            "ssi",
+            "iss",
+            $idUsuario,
             $nombre,
-            $biografia,
-            $idUsuario
+            $biografia
         );
     }
 
+    // Ejecutar procedimiento.
     $stmt->execute();
+
+    // Limpiar posibles resultados adicionales.
+    limpiarResultados($stmt);
+
     $stmt->close();
-
-    // Comprobar que el usuario exista.
-    $consulta = $conexion->prepare(
-        "SELECT id_usuario
-         FROM USUARIOS
-         WHERE id_usuario = ?
-           AND estado = 'activo'
-         LIMIT 1"
-    );
-
-    $consulta->bind_param("i", $idUsuario);
-    $consulta->execute();
-
-    $existe = $consulta->get_result()->num_rows > 0;
-
-    $consulta->close();
-
-    if (!$existe) {
-        http_response_code(404);
-
-        echo json_encode([
-            'success' => false,
-            'message' => 'No se encontró el usuario.'
-        ]);
-
-        exit;
-    }
 
     // Actualizar nombre en la sesión.
     $_SESSION['nombre'] = $nombre;
 
-    echo json_encode([
-        'success' => true,
-        'message' => 'Perfil actualizado correctamente.',
-        'usuario' => [
-            'nombre' => $nombre,
-            'biografia' => $biografia
+    responder(
+        true,
+        'Perfil actualizado correctamente.',
+        200,
+        [
+            'usuario' => [
+                'nombre' => $nombre,
+                'biografia' => $biografia
+            ]
         ]
-    ], JSON_UNESCAPED_UNICODE);
+    );
 
-} catch (Throwable $error) {
+} catch (RuntimeException $error) {
+
+    // Errores de validación de la fotografía.
+    responder(false, $error->getMessage(), 400);
+
+} catch (mysqli_sql_exception $error) {
+
+    // Identificar si el procedimiento no encontró al usuario.
+    if (strpos($error->getMessage(), 'USUARIO_NO_ENCONTRADO') !== false) {
+        responder(false, 'No se encontró el usuario.', 404);
+    }
 
     error_log(
         'Error al actualizar perfil: ' . $error->getMessage()
     );
 
-    http_response_code(400);
+    responder(
+        false,
+        'Ocurrió un error al actualizar el perfil.',
+        500
+    );
 
-    echo json_encode([
-        'success' => false,
-        'message' => $error->getMessage()
-    ], JSON_UNESCAPED_UNICODE);
+} catch (Throwable $error) {
+
+    error_log(
+        'Error inesperado al actualizar perfil: ' . $error->getMessage()
+    );
+
+    responder(
+        false,
+        'Ocurrió un error al actualizar el perfil.',
+        500
+    );
 }
+
 

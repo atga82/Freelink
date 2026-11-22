@@ -27,26 +27,38 @@ if ($correo === '' || $password === '') {
 }
 
 try {
-    $sql = "SELECT
-                id_usuario,
-                nombre,
-                correo,
-                password_hash,
-                tipo_usuario,
-                estado
-            FROM USUARIOS
-            WHERE correo = ?
-            LIMIT 1";
+
+    // Llamar al procedimiento almacenado de autenticación.
+    $sql = "CALL sp_autenticar_usuario(?)";
 
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("s", $correo);
     $stmt->execute();
 
+    // Obtener el usuario devuelto por el procedimiento.
     $resultado = $stmt->get_result();
     $usuario = $resultado->fetch_assoc();
 
+    // Liberar el resultado principal.
+    $resultado->free();
+
+    // Consumir posibles resultados adicionales del CALL.
+    while ($stmt->more_results()) {
+
+        if (!$stmt->next_result()) {
+            break;
+        }
+
+        $resultadoExtra = $stmt->get_result();
+
+        if ($resultadoExtra) {
+            $resultadoExtra->free();
+        }
+    }
+
     $stmt->close();
 
+    // Verificar que el usuario exista y que su contraseña sea correcta.
     if (
         !$usuario ||
         !password_verify($password, $usuario['password_hash'])
@@ -54,6 +66,7 @@ try {
         responder(false, 'Correo o contraseña incorrectos.', 401);
     }
 
+    // Verificar que la cuenta esté activa.
     if ($usuario['estado'] !== 'activo') {
         responder(false, 'Esta cuenta no se encuentra activa.', 403);
     }
@@ -73,5 +86,7 @@ try {
 } catch (mysqli_sql_exception $e) {
 
     error_log('Error al iniciar sesión: ' . $e->getMessage());
+
     responder(false, 'Ocurrió un error al iniciar sesión.', 500);
 }
+
