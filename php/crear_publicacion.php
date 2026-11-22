@@ -134,56 +134,22 @@ if ($hayArchivo) {
 }
 
 try {
-    $conexion->begin_transaction();
-    // Validamos que la categoria seleccionada exista
-    $stmtCategoria = $conexion->prepare(
-     "SELECT id_categoria FROM CATEGORIAS WHERE id_categoria = ?"
-);
+    // Una única llamada al procedimiento. MySQL valida la categoría y guarda el BLOB.
+    $stmt = $conexion->prepare("CALL sp_crear_publicacion(?, ?, ?, ?, ?, ?, ?, ?)");
 
-$stmtCategoria->bind_param("i", $idCategoria);
-$stmtCategoria->execute();
-
-$resultadoCategoria = $stmtCategoria->get_result();
-$categoriaFila = $resultadoCategoria->fetch_assoc();
-
-$stmtCategoria->close();
-
-if (!$categoriaFila) {
-    $conexion->rollback();
-    regresarConError("La categoría seleccionada no existe.");
-}
-// asosiamos los datos a la consulta 
-$idCategoria = (int) $categoriaFila["id_categoria"];
-
-    $sql = "INSERT INTO PUBLICACIONES
-        (
-            id_usuario,
-            id_categoria,
-            tipo_contenido,
-            contenido,
-            multimedia,
-            nombre_archivo,
-            mime_type,
-            tamano_bytes
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-    $stmt = $conexion->prepare($sql);
-
-    // multimedia es un dato binario.
+    $datoBinario = null;
     $stmt->bind_param(
         "iissbssi",
         $idUsuario,
         $idCategoria,
         $tipo,
         $contenido,
-        $archivoBinario,
+        $datoBinario,
         $nombreArchivo,
         $mimeType,
         $tamanoBytes
     );
 
-    // Envia el BLOB mediante el protocolo de MySQL.
     if ($archivoBinario !== null) {
         $stmt->send_long_data(4, $archivoBinario);
     }
@@ -191,15 +157,13 @@ $idCategoria = (int) $categoriaFila["id_categoria"];
     $stmt->execute();
     $stmt->close();
 
-    $conexion->commit();
-
     header("Location: ../pages/feed.html?publicacion=exitosa");
     exit;
 
 } catch (Throwable $e) {
-    try {
-        $conexion->rollback();
-    } catch (Throwable $ignorado) {
+    // SIGNAL SQLSTATE '45000': errores de validación controlados por MySQL.
+    if ($e instanceof mysqli_sql_exception && (int) $e->getCode() === 1644) {
+        regresarConError($e->getMessage());
     }
 
     error_log("Error al guardar publicación: " . $e->getMessage());

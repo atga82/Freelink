@@ -14,28 +14,9 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 try {
-    $sql = "SELECT
-                p.id_publicacion,
-                p.id_usuario,
-                u.nombre,
-                p.tipo_contenido,
-                p.contenido,
-                p.nombre_archivo,
-                p.mime_type,
-                p.fecha_publicacion,
-                CASE
-                    WHEN p.multimedia IS NOT NULL
-                         AND OCTET_LENGTH(p.multimedia) > 0
-                    THEN 1
-                    ELSE 0
-                END AS tiene_multimedia
-            FROM PUBLICACIONES p
-            INNER JOIN USUARIOS u
-                ON u.id_usuario = p.id_usuario
-            WHERE p.estado = 'activo'
-            ORDER BY p.fecha_publicacion DESC";
-
-    $resultado = $conexion->query($sql);
+    $stmt = $conexion->prepare("CALL sp_listar_publicaciones_activas()");
+    $stmt->execute();
+    $resultado = $stmt->get_result();
 
     $publicaciones = [];
 
@@ -53,6 +34,7 @@ try {
 
         $publicaciones[] = $fila;
     }
+    $stmt->close();
 
     echo json_encode(
         $publicaciones,

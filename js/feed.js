@@ -5,6 +5,7 @@ const sugerencias = [
 ];
 
 const postsContainer = document.querySelector('#postsContainer');
+let usuarioActual = null;
 const suggestionsContainer = document.querySelector('#suggestionsContainer');
 let publicaciones = [];
 let filtroActual = 'all';
@@ -14,7 +15,7 @@ const escaparHTML = (valor = '') => String(valor).replace(/[&<>"']/g, caracter =
 function renderizarComentarios(comentarios) {
   return comentarios.map(comentario => `
     <div class="comment">
-      <span class="comment-avatar avatar-${escaparHTML(comentario.avatar)}">${escaparHTML(comentario.iniciales)}</span>
+      <span class="comment-avatar avatar-user" style="position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">${escaparHTML(comentario.iniciales)}${comentario.fotoPerfil ? `<img src="${escaparHTML(comentario.fotoPerfil)}" alt="Foto de ${escaparHTML(comentario.autor)}" class="comment-avatar-image" onerror="this.remove()">` : ''}</span>
       <div class="comment-body"><strong>${escaparHTML(comentario.autor)}</strong><p>${escaparHTML(comentario.texto)}</p></div>
     </div>`).join('');
 }
@@ -53,12 +54,12 @@ const medio = post.tipo === 'text'
     <div><strong>${escaparHTML(post.autor)}</strong><span>${escaparHTML(post.profesion)} · ${escaparHTML(post.tiempo)}</span></div></div><button class="post-menu" type="button" aria-label="Más opciones"><i class="bi bi-three-dots"></i></button></div>
     <div class="post-content"><p>${escaparHTML(post.texto)}</p><div class="post-tags"><span>#${escaparHTML(post.etiqueta)}</span></div></div>
     ${medio ? `<div class="post-media ${post.tipo === 'video' ? 'video-media' : ''}">${medio}</div>` : ''} 
-    <div class="post-actions"><button class="action-btn like-btn" type="button" aria-pressed="false"><i class="bi bi-heart"></i><span>${post.likes}</span></button><button class="action-btn comment-btn" type="button"><i class="bi bi-chat"></i><span>${post.totalComentarios}</span></button></div>
+    <div class="post-actions"><span class="action-btn" title="Personas que calificaron esta publicación" aria-label="${post.totalValoraciones} personas calificaron esta publicación"><i class="bi bi-star-fill"></i><span>${post.totalValoraciones}</span></span><button class="action-btn comment-btn" type="button"><i class="bi bi-chat"></i><span>${post.totalComentarios}</span></button></div>
     <div class="rating-row" aria-label="Valorar publicación de una a cinco estrellas">
       <span>Calificación: ${post.promedioEstrellas ? post.promedioEstrellas.toFixed(1) + '/5' : 'Sin votos'} (${post.totalValoraciones})</span>
       <div class="rating-stars">${[1,2,3,4,5].map(n => `<button type="button" class="rating-star" data-stars="${n}" aria-label="Dar ${n} estrella${n>1?'s':''}" title="${n} estrellas"><i class="bi ${n <= post.misEstrellas ? 'bi-star-fill' : 'bi-star'}"></i></button>`).join('')}</div>
     </div>
-    <section class="comments-section"><div class="comments-title">Comentarios</div><div class="comments-list">${renderizarComentarios(post.comentarios)}</div><form class="comment-form"><span class="comment-avatar avatar-user">CG</span><input type="text" name="comment" maxlength="300" placeholder="Escribe un comentario..." aria-label="Escribe un comentario" required><button type="submit" aria-label="Enviar comentario"><i class="bi bi-send"></i></button></form></section>
+    <section class="comments-section"><div class="comments-title">Comentarios</div><div class="comments-list">${renderizarComentarios(post.comentarios)}</div><form class="comment-form"><span class="comment-avatar avatar-user" style="position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">${usuarioActual ? escaparHTML(usuarioActual.iniciales) : 'U'}${usuarioActual?.fotoPerfil ? `<img class="comment-avatar-image" src="${escaparHTML(usuarioActual.fotoPerfil)}" alt="Tu foto de perfil" onerror="this.remove()">` : ''}</span><input type="text" name="comment" maxlength="300" placeholder="Escribe un comentario..." aria-label="Escribe un comentario" required><button type="submit" aria-label="Enviar comentario"><i class="bi bi-send"></i></button></form></section>
   </article>`;
 }
 
@@ -163,7 +164,6 @@ async function cargarPublicaciones() {
         avatar: 'purple',
         media: post.nombre_archivo || 'Publicación de texto',
         url,
-        likes: 0,
         comentarios: [],
         totalComentarios: Number(post.total_comentarios || 0),
         promedioEstrellas: Number(post.promedio_estrellas || 0),
@@ -182,7 +182,8 @@ async function cargarPublicaciones() {
         if (!respuesta.ok) throw new Error('No se pudieron consultar los comentarios');
         const datos = await respuesta.json();
         post.comentarios = (datos.comentarios || []).map(c => ({
-          autor: c.autor, iniciales: c.autor.trim().slice(0,2).toUpperCase(), avatar:'user', texto:c.contenido
+          autor: c.autor || 'Usuario', iniciales: (c.autor || 'Usuario').trim().slice(0,2).toUpperCase(), avatar:'user', texto:c.contenido,
+          fotoPerfil: Number(c.id_usuario) > 0 ? `../php/obtener_foto_perfil.php?id=${encodeURIComponent(c.id_usuario)}` : null
         }));
       } catch (e) { console.error('Comentarios de publicación ' + post.id, e); }
     }));
@@ -225,14 +226,6 @@ postsContainer.addEventListener('click', async event => {
   if (!tarjeta) return;
   const post = publicaciones.find(item => item.id === Number(tarjeta.dataset.postId));
   if (!post) return;
-  const likeButton = event.target.closest('.like-btn');
-  if (likeButton) {
-    const gustado = likeButton.classList.toggle('liked');
-    likeButton.setAttribute('aria-pressed', String(gustado));
-    likeButton.querySelector('i').className = gustado ? 'bi bi-heart-fill' : 'bi bi-heart';
-    post.likes += gustado ? 1 : -1;
-    likeButton.querySelector('span').textContent = post.likes;
-  }
   if (event.target.closest('.comment-btn')) tarjeta.querySelector('.comment-form input').focus();
   const estrella = event.target.closest('[data-stars]');
   if (estrella) {
@@ -277,6 +270,19 @@ console.log("FEED.JS ACTUALIZADO");
 console.log("PRUEBA DE ARCHIVO NUEVO 12345");
 
 renderizarSugerencias();
+
+fetch('../php/obtener_perfil.php', {credentials:'same-origin'})
+  .then(r => r.ok ? r.json() : null)
+  .then(datos => {
+    if (!datos?.success || !datos.usuario) return;
+    const u = datos.usuario;
+    usuarioActual = {
+      iniciales: (u.nombre || 'Usuario').trim().split(/\s+/).slice(0,2).map(p => p[0]?.toUpperCase() || '').join(''),
+      fotoPerfil: u.foto_perfil || null
+    };
+    renderizarPublicaciones();
+  })
+  .catch(error => console.warn('No se pudo cargar la foto del usuario:', error));
 
 cargarPublicaciones().then(() => {
   console.log("Publicaciones cargadas:", publicaciones);

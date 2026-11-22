@@ -18,27 +18,7 @@ if (!isset($_SESSION['user_id'])) {
 try {
 
     // Consultar únicamente las publicaciones del usuario actual.
-    $sql = "SELECT
-                p.id_publicacion,
-                p.id_usuario,
-                u.nombre,
-                p.tipo_contenido,
-                p.contenido,
-                p.nombre_archivo,
-                p.mime_type,
-                p.fecha_publicacion,
-                CASE
-                    WHEN p.multimedia IS NOT NULL
-                         AND OCTET_LENGTH(p.multimedia) > 0
-                    THEN 1
-                    ELSE 0
-                END AS tiene_multimedia
-            FROM PUBLICACIONES p
-            INNER JOIN USUARIOS u
-                ON u.id_usuario = p.id_usuario
-            WHERE p.estado = 'activo'
-              AND p.id_usuario = ?
-            ORDER BY p.fecha_publicacion DESC";
+    $sql = "CALL sp_listar_publicaciones_usuario(?)";
 
     $stmt = $conexion->prepare($sql);
 

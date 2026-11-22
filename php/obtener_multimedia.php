@@ -27,11 +27,7 @@ if ($id <= 0) {
 require_once __DIR__ . '/conexion.php';
 
 try {
-    $sql = "SELECT multimedia, mime_type
-            FROM PUBLICACIONES
-            WHERE id_publicacion = ?
-              AND estado = 'activo'
-            LIMIT 1";
+    $sql = "CALL sp_obtener_multimedia_publicacion(?)";
 
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param('i', $id);
